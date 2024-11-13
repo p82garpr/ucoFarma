@@ -1,21 +1,3 @@
-# Ignorar entornos virtuales
-venv/
-
-# Ignorar archivos de configuración de entorno
-.env
-
-# Ignorar archivos y carpetas de caché de Python
-__pycache__/
-*.py[cod]
-
-# Ignorar configuraciones específicas del editor
-.vscode/
-.idea/
-
-
-
-#Frontend
-
 # Miscellaneous
 *.class
 *.log

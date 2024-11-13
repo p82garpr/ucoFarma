@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:uco_farma/src/config/theme/app_theme.dart';
+import 'package:uco_farma/src/presentation/pages/login_page.dart';
 
 
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: AppTheme().theme().colorScheme,
         useMaterial3: true,
       ),
+      home: const LoginPage(),
     );
   }
 

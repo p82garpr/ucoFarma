@@ -19,9 +19,15 @@ class Medicine(BaseModel):
     type: MedicineType
     doses: Optional[List[Dose]] = None
 
+class Shoplist(BaseModel):
+    cn: str
+    name: str
+    quantity: int
+
 class User(BaseModel):
     email: EmailStr
     password: str
     fullname: str
     birthdate: str
     medicines: Optional[List[Medicine]] = []
+    shoplist: Optional[List[Medicine]] = []

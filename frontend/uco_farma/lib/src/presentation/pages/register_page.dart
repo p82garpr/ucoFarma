@@ -81,135 +81,139 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         title: const Text('Registro'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextFormField(
-                controller: _fullNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Nombre completo',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.person),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese su nombre completo';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Correo electrónico',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese su correo electrónico';
-                  }
-                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                      .hasMatch(value)) {
-                    return 'Por favor ingrese un correo electrónico válido';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Contraseña',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock),
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese su contraseña';
-                  }
-                  if (value.length < 6) {
-                    return 'La contraseña debe tener al menos 6 caracteres';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              InkWell(
-                onTap: _selectDate,
-                child: InputDecorator(
+      body: Center(
+        
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextFormField(
+                  controller: _fullNameController,
                   decoration: const InputDecoration(
-                    labelText: 'Fecha de nacimiento',
+                    labelText: 'Nombre completo',
                     border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.calendar_today),
+                    prefixIcon: Icon(Icons.person),
                   ),
-                  child: Text(
-                    _selectedDate == null
-                        ? 'Seleccione una fecha'
-                        : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-                  ),
-                ),
-              ),
-              if (_selectedDate == null)
-                const Padding(
-                  padding: EdgeInsets.only(top: 8.0, left: 12.0),
-                  child: Text(
-                    'Por favor seleccione su fecha de nacimiento',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _onRegisterPressed,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Consumer<AuthProvider>(
-                  builder: (context, authProvider, child) {
-                    if (authProvider.isLoading) {
-                      return const CircularProgressIndicator(color: Colors.white);
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese su nombre completo';
                     }
-                    return const Text(
-                      'Registrarse',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    );
+                    return null;
                   },
                 ),
-              ),
-              if (context.watch<AuthProvider>().error != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: Text(
-                    context.watch<AuthProvider>().error!,
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 14,
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Correo electrónico',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.email),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese su correo electrónico';
+                    }
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                        .hasMatch(value)) {
+                      return 'Por favor ingrese un correo electrónico válido';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Contraseña',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.lock),
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese su contraseña';
+                    }
+                    if (value.length < 6) {
+                      return 'La contraseña debe tener al menos 6 caracteres';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                InkWell(
+                  onTap: _selectDate,
+                  child: InputDecorator(
+                    decoration: const InputDecoration(
+                      labelText: 'Fecha de nacimiento',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.calendar_today),
                     ),
-                    textAlign: TextAlign.center,
+                    child: Text(
+                      _selectedDate == null
+                          ? 'Seleccione una fecha'
+                          : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
+                    ),
                   ),
                 ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: _navigateToLogin,
-                child: const Text('¿Ya tienes una cuenta? Inicia sesión'),
-              ),
-            ],
+                if (_selectedDate == null)
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8.0, left: 12.0),
+                    child: Text(
+                      'Por favor seleccione su fecha de nacimiento',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _onRegisterPressed,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Consumer<AuthProvider>(
+                    builder: (context, authProvider, child) {
+                      if (authProvider.isLoading) {
+                        return const CircularProgressIndicator(color: Colors.white);
+                      }
+                      return const Text(
+                        'Registrarse',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                if (context.watch<AuthProvider>().error != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Text(
+                      context.watch<AuthProvider>().error!,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: _navigateToLogin,
+                  child: const Text('¿Ya tienes una cuenta? Inicia sesión'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

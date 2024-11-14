@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:uco_farma/src/presentation/pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -78,10 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const RegisterPage()),
-                    );
+                    Navigator.of(context).pushNamed('/register');
                   },
                   child: const Text('¿No tienes cuenta? Regístrate aquí'),
                 ),

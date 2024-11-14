@@ -14,10 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Uco Farma',
       debugShowCheckedModeBanner: false, // Remove the debug banner
-      theme: ThemeData(
-        colorScheme: AppTheme().theme().colorScheme,
-        useMaterial3: true,
-      ),
+      theme: AppTheme().theme(),
       //home: const LoginPage(),
       initialRoute: AppRoutes.initial,
       routes: AppRoutes.routes,

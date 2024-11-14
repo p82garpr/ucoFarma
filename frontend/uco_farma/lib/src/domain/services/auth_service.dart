@@ -42,15 +42,15 @@ class AuthService {
 
   Future<Map<String, dynamic>> register(String fullName, String email, String password, String birthdate) async {
     try {
-      print('Enviando datos: ${json.encode({
+      /*print('Enviando datos: ${json.encode({
         'fullname': fullName,
         'email': email,
         'password': password,
         'birthdate': birthdate,
-      })}'); // Para depuración
+      })}'); // Para depuración*/
 
       final response = await http.post(
-        Uri.parse('$_baseUrl/users'),
+        Uri.parse('$_baseUrl/users/'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -62,8 +62,8 @@ class AuthService {
         }),
       );
 
-      print('Status Code: ${response.statusCode}'); // Para depuración
-      print('Response body: ${response.body}'); // Para depuración
+      //print('Status Code: ${response.statusCode}'); // Para depuración
+      //print('Response body: ${response.body}'); // Para depuración
 
       if (response.body.isEmpty) {
         return {
@@ -92,7 +92,7 @@ class AuthService {
         };
       }
     } catch (e) {
-      print('Error en registro: $e'); // Para depuración
+      //print('Error en registro: $e'); // Para depuración
       return {
         'success': false,
         'message': 'Error de conexión: ${e.toString()}',

@@ -108,20 +108,14 @@ class _LoginPageState extends State<LoginPage> {
                                 FocusScope.of(context).unfocus();
                                 
                                 if (_formKey.currentState!.validate()) {
-                                  
                                   final success = await authProvider.login(
                                     _emailController.text.trim(),
                                     _passwordController.text,
                                   );
                                   
-                                  // Verificar si el widget está montado antes de navegar
-                                  if (success && mounted) {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const HomePage(),
-                                      ),
-                                    );
+                                  // Navegar a HomePage en una función separada para evitar problemas de contexto
+                                  if (success) {
+                                    _navigateToHome();
                                   }
                                 }
                               },
@@ -147,12 +141,14 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 16),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const RegisterPage(),
-                        ),
-                      );
+                      if (mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RegisterPage(),
+                          ),
+                        );
+                      }
                     },
                     child: const Text(
                       '¿No tienes cuenta? Regístrate aquí',
@@ -169,6 +165,17 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void _navigateToHome() {
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
+    }
   }
 
   @override

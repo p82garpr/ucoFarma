@@ -25,7 +25,7 @@ class AuthProvider extends ChangeNotifier {
       if (result['success']) {
         _user = User(
           email: email,
-          fullname: result['data']['fullname'] ?? '',
+          fullname: result['data']['fullname'] ?? email,
         );
         _error = null;
         _isLoading = false;

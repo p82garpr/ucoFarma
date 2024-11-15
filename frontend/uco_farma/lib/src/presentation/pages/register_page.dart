@@ -190,6 +190,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ElevatedButton(
                           onPressed: authProvider.isLoading ? null : _onRegisterPressed,
+                          style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.primaryContainer,
+                                ),
                           child: authProvider.isLoading
                               ? SizedBox(
                                   height: 20,

@@ -10,7 +10,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final theme = Theme.of(context);
-    
+    print('Estado del usuario: ${authProvider.user}');
+    print('Nombre completo: ${authProvider.user?.fullname}');
+    print('Email: ${authProvider.user?.email}');
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
@@ -38,20 +40,70 @@ class HomePage extends StatelessWidget {
       ),
       body: Center(
         //TODO:añadir widget de tarjetas de medicamentos
-        child: Text(
-          'Bienvenido ${authProvider.user?.fullname ?? authProvider.user?.email}',
-          style: theme.textTheme.titleLarge,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Bienvenido',
+              style: theme.textTheme.titleLarge,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Fullname: ${authProvider.user?.fullname}',
+              style: theme.textTheme.bodyLarge,
+            ),
+            Text(
+              'Email: ${authProvider.user?.email}',
+              style: theme.textTheme.bodyLarge,
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         elevation: 4,
         backgroundColor: theme.colorScheme.secondary,
         foregroundColor: theme.colorScheme.onSecondary,
-        child: const Icon(Icons.add),
-        //TODO: añadir medicamentos
         onPressed: () {
-          // Acción del botón
-        }
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Añadir Medicamento'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.edit),
+                      title: const Text('Manualmente'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        // TODO: Navegar a la página de añadir manual
+                        // Navigator.push(context, MaterialPageRoute(builder: (context) => AddMedicineManualPage()));
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.nfc),
+                      title: const Text('Escanear NFC'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        // TODO: Implementar lectura NFC
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.qr_code),
+                      title: const Text('Escanear QR'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        // TODO: Implementar lectura QR
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: const Icon(Icons.add),
       ),
       drawer: Drawer( //TODO: pensar que se puede poner en el menu superior
         child: ListView(
@@ -123,27 +175,48 @@ class HomePage extends StatelessWidget {
           elevation: 3,
           selectedIndex: 0,
           onDestinationSelected: (int index) {
-            // Manejar la navegación
+            switch (index) {
+              case 0:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+              /*case 1:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ShoppingListPage()),
+                );
+              case 2:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChatBotPage()),
+                );
+              case 3:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );*/
+            }
           },
           destinations: <NavigationDestination>[
             NavigationDestination(
-              icon: Icon(Icons.home, color: theme.colorScheme.onPrimary),
-              selectedIcon: Icon(Icons.home, color: theme.colorScheme.onPrimary),
-              label: 'Inicio',
+              icon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary),
+              selectedIcon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary),
+              label: 'Inventario',
             ),
             NavigationDestination(
-              icon: Icon(Icons.search, color: theme.colorScheme.onPrimary),
-              selectedIcon: Icon(Icons.search, color: theme.colorScheme.onPrimary),
-              label: 'Buscar',
+              icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
+              selectedIcon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
+              label: 'Lista Compra',
             ),
             NavigationDestination(
-              icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onSurface),
-              selectedIcon: Icon(Icons.shopping_cart, color: theme.colorScheme.primary),
-              label: 'Carrito',
+              icon: Icon(Icons.chat, color: theme.colorScheme.onPrimary),
+              selectedIcon: Icon(Icons.chat, color: theme.colorScheme.onPrimary),
+              label: 'ChatBot',
             ),
             NavigationDestination(
-              icon: Icon(Icons.person, color: theme.colorScheme.onSurface),
-              selectedIcon: Icon(Icons.person, color: theme.colorScheme.primary),
+              icon: Icon(Icons.person, color: theme.colorScheme.onPrimary),
+              selectedIcon: Icon(Icons.person, color: theme.colorScheme.onPrimary),
               label: 'Perfil',
             ),
           ],

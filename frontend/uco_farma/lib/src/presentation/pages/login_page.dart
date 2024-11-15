@@ -43,7 +43,8 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/images/logo.jpg',
+                      //'assets/images/logo.jpg',
+                      'assets/images/logo-removebg.png',
                       height: 200,
                       width: 200,
                       fit: BoxFit.contain,
@@ -129,6 +130,9 @@ class _LoginPageState extends State<LoginPage> {
                                     }
                                   }
                                 },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.primaryContainer,
+                                ),
                                 child: const Text(
                                   'Iniciar Sesión',
                                 ),

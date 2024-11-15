@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
-import 'package:uco_farma/src/presentation/pages/login_page.dart';
+import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -25,11 +25,9 @@ class _RegisterPageState extends State<RegisterPage> {
       lastDate: DateTime.now(),
     );
     if (picked != null && picked != _selectedDate) {
-      if (mounted) {
-        setState(() {
-          _selectedDate = picked;
-        });
-      }
+      setState(() {
+        _selectedDate = picked;
+      });
     }
   }
 
@@ -77,12 +75,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro'),
+        title: Text(
+          'Registro',
+          style: theme.textTheme.headlineMedium?.copyWith(
+            color: theme.colorScheme.onPrimary,
+          ),
+        ),
+        backgroundColor: theme.colorScheme.primary,
       ),
       body: Center(
-        
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Form(
@@ -95,7 +100,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _fullNameController,
                   decoration: const InputDecoration(
                     labelText: 'Nombre completo',
-                    border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.person),
                   ),
                   validator: (value) {
@@ -110,7 +114,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _emailController,
                   decoration: const InputDecoration(
                     labelText: 'Correo electrónico',
-                    border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.email),
                   ),
                   keyboardType: TextInputType.emailAddress,
@@ -130,7 +133,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _passwordController,
                   decoration: const InputDecoration(
                     labelText: 'Contraseña',
-                    border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.lock),
                   ),
                   obscureText: true,
@@ -150,67 +152,70 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: InputDecorator(
                     decoration: const InputDecoration(
                       labelText: 'Fecha de nacimiento',
-                      border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.calendar_today),
                     ),
                     child: Text(
                       _selectedDate == null
                           ? 'Seleccione una fecha'
                           : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
+                      style: theme.textTheme.bodyLarge,
                     ),
                   ),
                 ),
                 if (_selectedDate == null)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 8.0, left: 12.0),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, left: 12.0),
                     child: Text(
                       'Por favor seleccione su fecha de nacimiento',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 12,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.error,
                       ),
                     ),
                   ),
                 const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: _onRegisterPressed,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Consumer<AuthProvider>(
-                    builder: (context, authProvider, child) {
-                      if (authProvider.isLoading) {
-                        return const CircularProgressIndicator(color: Colors.white);
-                      }
-                      return const Text(
-                        'Registrarse',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                Consumer<AuthProvider>(
+                  builder: (context, authProvider, child) {
+                    return Column(
+                      children: [
+                        if (authProvider.error != null)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16.0),
+                            child: Text(
+                              authProvider.error!,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.error,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ElevatedButton(
+                          onPressed: authProvider.isLoading ? null : _onRegisterPressed,
+                          child: authProvider.isLoading
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: theme.colorScheme.onPrimary,
+                                  ),
+                                )
+                              : const Text(
+                                  'Registrarse',
+                                ),
                         ),
-                      );
-                    },
-                  ),
+                      ],
+                    );
+                  },
                 ),
-                if (context.watch<AuthProvider>().error != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      context.watch<AuthProvider>().error!,
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: _navigateToLogin,
-                  child: const Text('¿Ya tienes una cuenta? Inicia sesión'),
+                  child: Text(
+                    '¿Ya tienes una cuenta? Inicia sesión',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
                 ),
               ],
             ),

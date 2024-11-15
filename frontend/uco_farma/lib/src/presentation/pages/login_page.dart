@@ -16,8 +16,21 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  void _navigateToHome() {
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -36,11 +49,10 @@ class _LoginPageState extends State<LoginPage> {
                       fit: BoxFit.contain,
                     ),
                     const SizedBox(height: 24),
-                    const Text(
+                    Text(
                       'Uco Farma',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
+                      style: theme.textTheme.headlineLarge?.copyWith(
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                     const SizedBox(height: 48),
@@ -49,7 +61,6 @@ class _LoginPageState extends State<LoginPage> {
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         labelText: 'Email',
-                        border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.email),
                       ),
                       validator: (value) {
@@ -67,7 +78,6 @@ class _LoginPageState extends State<LoginPage> {
                       controller: _passwordController,
                       decoration: const InputDecoration(
                         labelText: 'Contraseña',
-                        border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.lock),
                       ),
                       obscureText: true,
@@ -85,7 +95,9 @@ class _LoginPageState extends State<LoginPage> {
                     Consumer<AuthProvider>(
                       builder: (context, authProvider, child) {
                         if (authProvider.isLoading) {
-                          return const CircularProgressIndicator();
+                          return CircularProgressIndicator(
+                            color: theme.colorScheme.primary,
+                          );
                         }
                         return Column(
                           children: [
@@ -94,9 +106,8 @@ class _LoginPageState extends State<LoginPage> {
                                 padding: const EdgeInsets.only(bottom: 16.0),
                                 child: Text(
                                   authProvider.error!,
-                                  style: const TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 14,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.error,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -105,7 +116,6 @@ class _LoginPageState extends State<LoginPage> {
                               width: double.infinity,
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  // Ocultar el teclado
                                   FocusScope.of(context).unfocus();
                                   
                                   if (_formKey.currentState!.validate()) {
@@ -114,24 +124,13 @@ class _LoginPageState extends State<LoginPage> {
                                       _passwordController.text,
                                     );
                                     
-                                    // Navegar a HomePage en una función separada para evitar problemas de contexto
                                     if (success) {
                                       _navigateToHome();
                                     }
                                   }
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
                                 child: const Text(
                                   'Iniciar Sesión',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
                                 ),
                               ),
                             ),
@@ -151,11 +150,10 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         }
                       },
-                      child: const Text(
+                      child: Text(
                         '¿No tienes cuenta? Regístrate aquí',
-                        style: TextStyle(
-                          fontSize: 14,
-                          decoration: TextDecoration.none,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.primary,
                         ),
                       ),
                     ),
@@ -167,17 +165,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  }
-
-  void _navigateToHome() {
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      );
-    }
   }
 
   @override

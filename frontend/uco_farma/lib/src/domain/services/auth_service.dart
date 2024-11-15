@@ -99,4 +99,32 @@ class AuthService {
       };
     }
   }
+
+  Future<Map<String, dynamic>> getUserData(String token) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/users/me'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'data': json.decode(response.body),
+        };
+      } else {
+        return {
+          'success': false,
+          'message': 'Error al obtener datos del usuario',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': e.toString(),
+      };
+    }
+  }
 }

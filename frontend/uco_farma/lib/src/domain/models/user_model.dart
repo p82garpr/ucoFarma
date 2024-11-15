@@ -1,12 +1,16 @@
+import '../models/medicine_model.dart'; 
+
 class User {
   final String email;
   final String fullname;
   final String? birthdate;
-  
+  final List<Medicine>? medicines;
+
   User({
     required this.email,
     required this.fullname,
     this.birthdate,
+    this.medicines,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -14,6 +18,9 @@ class User {
       email: json['email'] ?? '',
       fullname: json['fullname'] ?? '',
       birthdate: json['birthdate'],
+      medicines: (json['medicines'] as List<dynamic>?)
+          ?.map((med) => Medicine.fromJson(med))
+          .toList(),
     );
   }
 
@@ -22,6 +29,7 @@ class User {
       'email': email,
       'fullname': fullname,
       'birthdate': birthdate,
+      'medicines': medicines?.map((med) => med.toJson()).toList(),
     };
   }
 }

@@ -20,19 +20,28 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _authService.login(email, password);
+      final loginResult = await _authService.login(email, password);
       
-      if (result['success']) {
-        _user = User(
-          email: email,
-          fullname: result['data']['fullname'] ?? email,
-        );
-        _error = null;
-        _isLoading = false;
-        notifyListeners();
-        return true;
+      if (loginResult['success']) {
+        final token = loginResult['data']['access_token'];
+        
+        // Obtener datos del usuario
+        final userDataResult = await _authService.getUserData(token);
+        
+        if (userDataResult['success']) {
+          _user = User.fromJson(userDataResult['data']);
+          _error = null;
+          _isLoading = false;
+          notifyListeners();
+          return true;
+        } else {
+          _error = userDataResult['message'];
+          _isLoading = false;
+          notifyListeners();
+          return false;
+        }
       } else {
-        _error = result['message'];
+        _error = loginResult['message'];
         _isLoading = false;
         notifyListeners();
         return false;

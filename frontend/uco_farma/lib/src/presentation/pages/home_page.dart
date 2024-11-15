@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'login_page.dart';
+import '../widgets/medicines_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -10,9 +11,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final theme = Theme.of(context);
-    print('Estado del usuario: ${authProvider.user}');
-    print('Nombre completo: ${authProvider.user?.fullname}');
-    print('Email: ${authProvider.user?.email}');
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
@@ -38,27 +36,23 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        //TODO:añadir widget de tarjetas de medicamentos
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Bienvenido',
-              style: theme.textTheme.titleLarge,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Fullname: ${authProvider.user?.fullname}',
-              style: theme.textTheme.bodyLarge,
-            ),
-            Text(
-              'Email: ${authProvider.user?.email}',
-              style: theme.textTheme.bodyLarge,
-            ),
-          ],
-        ),
-      ),
+      body: authProvider.user?.medicines == null || authProvider.user!.medicines!.isEmpty
+        ? const Center(
+            child: Text('No hay medicamentos registrados'),
+          )
+        : ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: authProvider.user!.medicines!.length,
+            itemBuilder: (context, index) {
+              final medicine = authProvider.user!.medicines![index];
+              return MedicinesCard(
+                medicine: medicine,
+                onTap: () {
+                  // TODO: Implementar acción al tocar la tarjeta
+                },
+              );
+            },
+          ),
       floatingActionButton: FloatingActionButton(
         elevation: 4,
         backgroundColor: theme.colorScheme.secondary,

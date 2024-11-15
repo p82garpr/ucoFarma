@@ -37,6 +37,7 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: Center(
+        //TODO:añadir widget de tarjetas de medicamentos
         child: Text(
           'Bienvenido ${authProvider.user?.fullname ?? authProvider.user?.email}',
           style: theme.textTheme.titleLarge,
@@ -47,11 +48,12 @@ class HomePage extends StatelessWidget {
         backgroundColor: theme.colorScheme.secondary,
         foregroundColor: theme.colorScheme.onSecondary,
         child: const Icon(Icons.add),
+        //TODO: añadir medicamentos
         onPressed: () {
           // Acción del botón
         }
       ),
-      drawer: Drawer(
+      drawer: Drawer( //TODO: pensar que se puede poner en el menu superior
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
@@ -106,36 +108,47 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: theme.colorScheme.surface,
-        elevation: 3,
-        selectedIndex: 0,
-        onDestinationSelected: (int index) {
-          // Manejar la navegación
-        },
-        destinations: <NavigationDestination>[
-          NavigationDestination(
-            icon: Icon(Icons.home, color: theme.colorScheme.onSurface),
-            selectedIcon: Icon(Icons.home, color: theme.colorScheme.primary),
-            label: 'Inicio',
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          navigationBarTheme: NavigationBarThemeData(
+            labelTextStyle: WidgetStateProperty.all(
+              TextStyle(color: theme.colorScheme.onPrimary),
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.search, color: theme.colorScheme.onSurface),
-            selectedIcon: Icon(Icons.search, color: theme.colorScheme.primary),
-            label: 'Buscar',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onSurface),
-            selectedIcon: Icon(Icons.shopping_cart, color: theme.colorScheme.primary),
-            label: 'Carrito',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person, color: theme.colorScheme.onSurface),
-            selectedIcon: Icon(Icons.person, color: theme.colorScheme.primary),
-            label: 'Perfil',
-          ),
-        ],
-      ),
+        ),//TODO: pensar que botones habra abajo
+        child: NavigationBar(
+          backgroundColor: theme.colorScheme.primary,
+          indicatorColor: theme.colorScheme.onPrimary.withOpacity(0.2),
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          elevation: 3,
+          selectedIndex: 0,
+          onDestinationSelected: (int index) {
+            // Manejar la navegación
+          },
+          destinations: <NavigationDestination>[
+            NavigationDestination(
+              icon: Icon(Icons.home, color: theme.colorScheme.onPrimary),
+              selectedIcon: Icon(Icons.home, color: theme.colorScheme.onPrimary),
+              label: 'Inicio',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.search, color: theme.colorScheme.onPrimary),
+              selectedIcon: Icon(Icons.search, color: theme.colorScheme.onPrimary),
+              label: 'Buscar',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onSurface),
+              selectedIcon: Icon(Icons.shopping_cart, color: theme.colorScheme.primary),
+              label: 'Carrito',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.person, color: theme.colorScheme.onSurface),
+              selectedIcon: Icon(Icons.person, color: theme.colorScheme.primary),
+              label: 'Perfil',
+            ),
+          ],
+        ),
+      )
     );
   }
 }

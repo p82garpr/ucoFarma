@@ -17,7 +17,7 @@ class AppTheme{
   ThemeData theme(){
     return ThemeData(
       useMaterial3: true,
-      colorSchemeSeed: _colorThemes[0],
+      colorSchemeSeed: _colorThemes[1],
     );
   }
 }

@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Text('Bienvenido ${authProvider.user?.correo}'),
+        child: Text('Bienvenido ${authProvider.user?.fullname ?? authProvider.user?.email}'),
       ),
     );
   }

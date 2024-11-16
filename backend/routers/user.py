@@ -2,7 +2,7 @@
 
 from bson import ObjectId
 from fastapi import APIRouter, HTTPException, Depends
-from schemas.user import UserCreate, UserOut
+from schemas.user import UserCreate, UserOut, UserOutID
 from database import db
 from auth.jwt_handler import verify_token
 from models.user import User
@@ -29,7 +29,7 @@ async def create_user(user: UserCreate):
     return await db["users"].find_one({"_id": new_user.inserted_id})
 
 
-@router.get("/me", response_model=UserOut)
+@router.get("/me", response_model=UserOutID)
 async def read_users_me(token: str = Depends(oauth2_scheme)):
     """
     Obtener la información del usuario autenticado.
@@ -53,6 +53,9 @@ async def read_users_me(token: str = Depends(oauth2_scheme)):
     user = await db["users"].find_one({"email": payload["sub"]})
     if user is None:
         raise HTTPException(status_code=402, detail="Usuario no encontrado")
+    
+    #añadir el object id de mongo a la respuesta
+    user["user_id"] = str(user["_id"])
     
     return user
 

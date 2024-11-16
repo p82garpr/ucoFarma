@@ -6,10 +6,12 @@ class AuthProvider extends ChangeNotifier {
   final _authService = AuthService();
   
   User? _user;
+  String? _token;
   bool _isLoading = false;
   String? _error;
 
   User? get user => _user;
+  String? get token => _token;
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get isAuthenticated => _user != null;
@@ -23,10 +25,9 @@ class AuthProvider extends ChangeNotifier {
       final loginResult = await _authService.login(email, password);
       
       if (loginResult['success']) {
-        final token = loginResult['data']['access_token'];
+        _token = loginResult['data']['access_token'];
         
-        // Obtener datos del usuario
-        final userDataResult = await _authService.getUserData(token);
+        final userDataResult = await _authService.getUserData(_token!);
         
         if (userDataResult['success']) {
           _user = User.fromJson(userDataResult['data']);
@@ -83,6 +84,29 @@ class AuthProvider extends ChangeNotifier {
 
   void logout() {
     _user = null;
+    _token = null;
     notifyListeners();
+  }
+
+  Future<bool> refreshUserData() async {
+    if (_token == null) return false;
+    
+    try {
+      final userDataResult = await _authService.getUserData(_token!);
+      
+      if (userDataResult['success']) {
+        _user = User.fromJson(userDataResult['data']);
+        notifyListeners();
+        return true;
+      } else {
+        _error = userDataResult['message'];
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
   }
 }

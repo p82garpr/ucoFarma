@@ -4,6 +4,7 @@ import '../providers/auth_provider.dart';
 import 'login_page.dart';
 import '../widgets/medicines_card.dart';
 import 'add_medicine_manual_page.dart';
+import 'add_medicine_qr_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -107,7 +108,7 @@ class HomePage extends StatelessWidget {
                       title: const Text('Escanear QR'),
                       onTap: () {
                         Navigator.pop(context);
-                        // TODO: Implementar lectura QR
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const AddMedicineQRPage()));
                       },
                     ),
                   ],

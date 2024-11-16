@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:uco_farma/src/presentation/providers/medicine_provider.dart';
+import '../providers/auth_provider.dart';
 
 class AddMedicineManualPage extends StatefulWidget {
   const AddMedicineManualPage({super.key});
@@ -11,30 +12,67 @@ class AddMedicineManualPage extends StatefulWidget {
 
 class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
   final _formKey = GlobalKey<FormState>();
-  final _codigoController = TextEditingController();
+  final _cnController = TextEditingController();
+  final _quantityController = TextEditingController();
   bool _isLoading = false;
+  String? _error;
+  String _selectedType = 'solid'; // Por defecto sólido
+  //String _unit = 'unidades'; // Por defecto unidades
 
-  //TODO: ESTE METODO ES TEMPORAL, HAY QUE HACERLO LLAMANDO AL PROVIDER DE MEDICINES QUE CREAREMOS EN EL PROYECTO
+  @override
+  void dispose() {
+    _cnController.dispose();
+    _quantityController.dispose();
+    super.dispose();
+  }
+
+  String _getUnitLabel() {
+    return _selectedType == 'solid' ? 'unidades' : 'ml';
+  }
+
   Future<void> _addMedicine() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
 
     try {
-      final response = await http.post(
-        Uri.parse('TU_URL_API/medicines'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({'cn': _codigoController.text}),
+      final scaffoldMessenger = ScaffoldMessenger.of(context);
+      final navigator = Navigator.of(context);
+      
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final medicineProvider = Provider.of<MedicineProvider>(context, listen: false);
+
+      final userId = authProvider.user?.id;
+      final token = authProvider.token;
+      
+      if (userId == null || token == null) {
+        throw Exception('Usuario no autenticado');
+      }
+
+      final success = await medicineProvider.addMedicine(
+        userId,
+        _cnController.text,
+        token,
+        int.parse(_quantityController.text),
+        _selectedType,
       );
 
-      if (response.statusCode == 200) {
+      if (!mounted) return;
+
+      if (success) {
+        await authProvider.refreshUserData();
+
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
+        
+        scaffoldMessenger.showSnackBar(
           const SnackBar(content: Text('Medicamento añadido con éxito')),
         );
-        Navigator.pop(context);
+        navigator.pop();
       } else {
-        throw Exception('Error al añadir el medicamento');
+        throw Exception(medicineProvider.error ?? 'Error al añadir el medicamento');
       }
     } catch (e) {
       if (!mounted) return;
@@ -48,35 +86,125 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Añadir Medicamento Manual'),
+        title: Text(
+          'Añadir Medicamento',
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: theme.colorScheme.onPrimary,
+          ),
+        ),
+        backgroundColor: theme.colorScheme.primary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextFormField(
-                controller: _codigoController,
+                controller: _cnController,
                 decoration: const InputDecoration(
-                  labelText: 'Código Nacional',
-                  hintText: 'Introduce el código nacional del medicamento',
+                  labelText: 'Código Nacional (CN)',
+                  helperText: 'Introduce el código nacional del medicamento',
+                  prefixIcon: Icon(Icons.medication),
                 ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor introduce el código nacional';
                   }
+                  if (value.length < 6) {
+                    return 'El código nacional debe tener al menos 6 dígitos';
+                  }
                   return null;
                 },
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
+              
+              // Selector de tipo de medicamento
+              Row(
+                children: [
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text('Sólido'),
+                      value: 'solid',
+                      groupValue: _selectedType,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedType = value!;
+                          //_unit = 'unidades';
+                        });
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: const Text('Líquido'),
+                      value: 'liquid',
+                      groupValue: _selectedType,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedType = value!;
+                          //_unit = 'ml';
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              
+              const SizedBox(height: 16),
+              
+              // Campo de cantidad
+              TextFormField(
+                controller: _quantityController,
+                decoration: InputDecoration(
+                  labelText: 'Cantidad',
+                  helperText: 'Introduce la cantidad en ${_getUnitLabel()}',
+                  prefixIcon: Icon(_selectedType == 'solid' ? 
+                    Icons.medication : Icons.medication_liquid),
+                  suffixText: _getUnitLabel(),
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor introduce la cantidad';
+                  }
+                  if (int.tryParse(value) == null || int.parse(value) <= 0) {
+                    return 'Por favor introduce un número válido';
+                  }
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 24),
+              if (_error != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(
+                    _error!,
+                    style: TextStyle(
+                      color: theme.colorScheme.error,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ElevatedButton(
                 onPressed: _isLoading ? null : _addMedicine,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primaryContainer,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
                 child: _isLoading
-                    ? const CircularProgressIndicator()
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : const Text('Añadir Medicamento'),
               ),
             ],

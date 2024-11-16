@@ -39,7 +39,7 @@ class MedicinesCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Cantidad: ${medicine.quantity}',
+                      'Cantidad: ${medicine.quantity} dosis restantes.',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],

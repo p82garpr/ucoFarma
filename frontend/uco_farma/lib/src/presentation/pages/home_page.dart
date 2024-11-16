@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'login_page.dart';
 import '../widgets/medicines_card.dart';
+import 'add_medicine_manual_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -36,23 +37,41 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: authProvider.user?.medicines == null || authProvider.user!.medicines!.isEmpty
-        ? const Center(
-            child: Text('No hay medicamentos registrados'),
-          )
-        : ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: authProvider.user!.medicines!.length,
-            itemBuilder: (context, index) {
-              final medicine = authProvider.user!.medicines![index];
-              return MedicinesCard(
-                medicine: medicine,
-                onTap: () {
-                  // TODO: Implementar acción al tocar la tarjeta
-                },
-              );
-            },
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: const AssetImage('assets/images/logo-removebg.png'),
+            fit: BoxFit.fitWidth,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.8), // Ajusta la opacidad aquí
+              BlendMode.dstOut,
+            ),
           ),
+        ),
+        child: authProvider.user?.medicines == null || authProvider.user!.medicines!.isEmpty
+          ? const Center(
+              child: Text(
+                'No hay medicamentos registrados',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: authProvider.user!.medicines!.length,
+              itemBuilder: (context, index) {
+                final medicine = authProvider.user!.medicines![index];
+                return MedicinesCard(
+                  medicine: medicine,
+                  onTap: () {
+                    // TODO: Implementar acción al tocar la tarjeta
+                  },
+                );
+              },
+            ),
+      ),
       floatingActionButton: FloatingActionButton(
         elevation: 4,
         backgroundColor: theme.colorScheme.secondary,
@@ -72,7 +91,7 @@ class HomePage extends StatelessWidget {
                       onTap: () {
                         Navigator.pop(context);
                         // TODO: Navegar a la página de añadir manual
-                        // Navigator.push(context, MaterialPageRoute(builder: (context) => AddMedicineManualPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const AddMedicineManualPage()));
                       },
                     ),
                     ListTile(

@@ -49,14 +49,14 @@ class _LoginPageState extends State<LoginPage> {
                       width: 200,
                       fit: BoxFit.contain,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 10),
                     Text(
                       'Uco Farma',
                       style: theme.textTheme.headlineLarge?.copyWith(
                         color: theme.colorScheme.primary,
                       ),
                     ),
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,

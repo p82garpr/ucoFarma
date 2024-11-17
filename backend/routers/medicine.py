@@ -8,26 +8,127 @@ from schemas.user import UserOut
 from routers.auth import oauth2_scheme
 from bson import ObjectId
 
-
 router = APIRouter()
 
 @router.post("/{user_id}/add-medicine", response_model=UserOut)
 async def add_medicine(user_id: str, medicine: Medicine, token: str = Depends(oauth2_scheme)):
+    """
+    Agregar un medicamento al inventario de un usuario.
+
+    - **user_id**: ID del usuario.
+    - **medicine**: Objeto del medicamento que se agregará.
+    - **token**: Token de autenticación JWT.
+    
+    Si el medicamento ya existe en el inventario del usuario, su cantidad se actualiza sumando la cantidad proporcionada.
+    
+    Devuelve el usuario con el inventario de medicamentos actualizado.
+    
+    Control de errores:
+    - Lanza un error 401 si el token es inválido.
+    - Lanza un error 402 si el usuario no se encuentra en la base de datos.
+    """
     payload = verify_token(token)
     if payload is None:
         raise HTTPException(status_code=401, detail="Token inválido")
     user = await db["users"].find_one({"_id": ObjectId(user_id)})
-    #print(user)
     if user:
         if "medicines" not in user:
             user["medicines"] = []
-        #check if medicine already exists
+        # Verificar si el medicamento ya existe
         for med in user["medicines"]:
             if med["cn"] == medicine.cn:
-                # medicine already exists, update quantity
+                # Si ya existe, actualizar cantidad
                 med["quantity"] += medicine.quantity
-            else:
-                user["medicines"].append(medicine.model_dump())
-        await db["users"].update_one({"_id": ObjectId(user_id)}, {"$set": user}) # update user with new medicine 
+                break
+        else:
+            user["medicines"].append(medicine.model_dump())
+        await db["users"].update_one({"_id": ObjectId(user_id)}, {"$set": user}) # Actualizar usuario con el nuevo medicamento 
         return user
-    raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    raise HTTPException(status_code=402, detail="Usuario no encontrado")
+
+
+@router.put("/{user_id}/take-medicine", response_model=UserOut)
+async def take_medicine(user_id: str, cn: str, quantity: int, token: str = Depends(oauth2_scheme)):
+    """
+    Registrar el consumo de una cantidad específica de un medicamento.
+
+    - **user_id**: ID del usuario.
+    - **cn**: Código Nacional (CN) del medicamento.
+    - **quantity**: Cantidad del medicamento que se consumirá.
+    - **token**: Token de autenticación JWT.
+    
+    Disminuye la cantidad disponible del medicamento en el inventario del usuario.
+    
+    Devuelve el usuario con el inventario de medicamentos actualizado.
+    
+    Control de errores:
+    - Lanza un error 401 si el token es inválido.
+    - Lanza un error 402 si el usuario no se encuentra en la base de datos.
+    - Lanza un error 403 si la cantidad disponible es insuficiente.
+    - Lanza un error 404 si el medicamento no se encuentra en el inventario del usuario.
+    """
+    payload = verify_token(token)
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Token inválido")
+    
+    user = await db["users"].find_one({"_id": ObjectId(user_id)})
+    if not user:
+        raise HTTPException(status_code=402, detail="Usuario no encontrado")
+    
+    medicine_found = False
+    for med in user["medicines"]:
+        if med["cn"] == cn:
+            if med["quantity"] < quantity:
+                raise HTTPException(
+                    status_code=403, 
+                    detail=f"Cantidad insuficiente. Solo quedan {med['quantity']} unidades"
+                )
+            med["quantity"] -= quantity
+            medicine_found = True
+            break
+    
+    if not medicine_found:
+        raise HTTPException(status_code=404, detail="Medicina no encontrada")
+        
+    await db["users"].update_one({"_id": ObjectId(user_id)}, {"$set": user})
+    return user
+
+
+@router.delete("/{user_id}/delete-medicine/{cn}", response_model=UserOut)
+async def delete_medicine(user_id: str, cn: str, token: str = Depends(oauth2_scheme)):
+    """
+    Eliminar un medicamento específico del inventario de un usuario.
+
+    - **user_id**: ID del usuario.
+    - **cn**: Código Nacional (CN) del medicamento que se eliminará.
+    - **token**: Token de autenticación JWT.
+    
+    Verifica si el usuario y el medicamento existen en la base de datos. Si el medicamento existe, lo elimina del inventario del usuario.
+    
+    Devuelve el usuario con el inventario actualizado.
+    
+    Control de errores:
+    - Lanza un error 401 si el token es inválido.
+    - Lanza un error 402 si el usuario no se encuentra en la base de datos.
+    - Lanza un error 404 si el medicamento no se encuentra en el inventario del usuario.
+    """
+    payload = verify_token(token)
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Token inválido")
+    
+    user = await db["users"].find_one({"_id": ObjectId(user_id)})
+    if not user:
+        raise HTTPException(status_code=402, detail="Usuario no encontrado")
+    
+    medicine_found = False
+    for med in user["medicines"]:
+        if med["cn"] == cn:
+            user["medicines"].remove(med)
+            medicine_found = True
+            break
+
+    if not medicine_found:
+        raise HTTPException(status_code=403, detail="Medicina no encontrada")
+    
+    await db["users"].update_one({"_id": ObjectId(user_id)}, {"$set": user})
+    return user

@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:uco_farma/src/app_routes.dart';
 import 'package:uco_farma/src/config/theme/app_theme.dart';
-import 'package:uco_farma/src/presentation/pages/login_page.dart';
 
 
 
@@ -14,11 +14,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Uco Farma',
       debugShowCheckedModeBanner: false, // Remove the debug banner
-      theme: ThemeData(
-        colorScheme: AppTheme().theme().colorScheme,
-        useMaterial3: true,
-      ),
-      home: const LoginPage(),
+      theme: AppTheme().theme(),
+      //home: const LoginPage(),
+      initialRoute: AppRoutes.initial,
+      routes: AppRoutes.routes,
     );
   }
 

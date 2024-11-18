@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:provider/provider.dart';
-import '../providers/medicine_provider.dart';
+import 'package:uco_farma/src/presentation/providers/medicine_provider.dart';
+import 'package:uco_farma/src/presentation/widgets/medicine_form.dart';
 import '../providers/auth_provider.dart';
 
 class AddMedicineNFCPage extends StatefulWidget {
@@ -16,6 +17,7 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
   final _quantityController = TextEditingController();
   final _frequencyController = TextEditingController();
   final _doseQuantityController = TextEditingController();
+
   bool _isLoading = false;
   String? _error;
   String _selectedType = 'solid';
@@ -32,6 +34,8 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
   @override
   void dispose() {
     _quantityController.dispose();
+    _frequencyController.dispose();
+    _doseQuantityController.dispose();
     super.dispose();
   }
 
@@ -49,8 +53,6 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
         try {
-          // Aquí procesamos los datos del tag NFC
-          // Este es un ejemplo, ajusta según el formato de tus tags NFC
           var ndef = Ndef.from(tag);
           if (ndef == null) {
             throw 'Tag no es compatible con NDEF';
@@ -75,10 +77,6 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
         }
       },
     );
-  }
-
-  String _getUnitLabel() {
-    return _selectedType == 'solid' ? 'unidades' : 'ml';
   }
 
   Future<void> _addMedicine() async {
@@ -150,7 +148,23 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
         ),
         backgroundColor: theme.colorScheme.primary,
       ),
-      body: _showForm ? _buildForm(theme) : _buildNfcScanner(theme),
+      body: _showForm
+          ? SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: MedicineForm(
+                formKey: _formKey,
+                quantityController: _quantityController,
+                frequencyController: _frequencyController,
+                doseQuantityController: _doseQuantityController,
+                selectedType: _selectedType,
+                isLoading: _isLoading,
+                error: _error,
+                scannedCN: _scannedCN,
+                onAddMedicine: _addMedicine,
+                onTypeChanged: (value) => setState(() => _selectedType = value),
+              ),
+            )
+          : _buildNfcScanner(theme),
     );
   }
 
@@ -204,97 +218,6 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
                 textAlign: TextAlign.center,
               ),
             ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildForm(ThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Código Nacional: $_scannedCN',
-              style: theme.textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: RadioListTile<String>(
-                    title: const Text('Sólido'),
-                    value: 'solid',
-                    groupValue: _selectedType,
-                    onChanged: (value) {
-                      setState(() => _selectedType = value!);
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: RadioListTile<String>(
-                    title: const Text('Líquido'),
-                    value: 'liquid',
-                    groupValue: _selectedType,
-                    onChanged: (value) {
-                      setState(() => _selectedType = value!);
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _quantityController,
-              decoration: InputDecoration(
-                labelText: 'Cantidad',
-                helperText: 'Introduce la cantidad en ${_getUnitLabel()}',
-                prefixIcon: Icon(_selectedType == 'solid'
-                    ? Icons.medication
-                    : Icons.medication_liquid),
-                suffixText: _getUnitLabel(),
-              ),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor introduce la cantidad';
-                }
-                if (int.tryParse(value) == null || int.parse(value) <= 0) {
-                  return 'Por favor introduce un número válido';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 24),
-            if (_error != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: Text(
-                  _error!,
-                  style: TextStyle(
-                    color: theme.colorScheme.error,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _addMedicine,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.primaryContainer,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: _isLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Añadir Medicamento'),
-            ),
           ],
         ),
       ),

@@ -1,9 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:uco_farma/src/app_routes.dart';
 import 'package:uco_farma/src/config/theme/app_theme.dart';
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,5 +17,4 @@ class MyApp extends StatelessWidget {
       routes: AppRoutes.routes,
     );
   }
-
 }

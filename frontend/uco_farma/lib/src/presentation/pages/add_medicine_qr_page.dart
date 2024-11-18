@@ -155,29 +155,52 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
             ),
             const SizedBox(height: 16),
             
-            Row(
-              children: [
-                Expanded(
-                  child: RadioListTile<String>(
-                    title: const Text('Sólido'),
-                    value: 'solid',
-                    groupValue: _selectedType,
-                    onChanged: (value) {
-                      setState(() => _selectedType = value!);
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: RadioListTile<String>(
-                    title: const Text('Líquido'),
-                    value: 'liquid',
-                    groupValue: _selectedType,
-                    onChanged: (value) {
-                      setState(() => _selectedType = value!);
-                    },
-                  ),
-                ),
-              ],
+            // ... existing radio buttons and quantity field ...
+
+            const SizedBox(height: 16),
+            
+            // Campo de frecuencia
+            TextFormField(
+              controller: _frequencyController,
+              decoration: const InputDecoration(
+                labelText: 'Frecuencia',
+                helperText: 'Cada cuántas horas se debe tomar',
+                prefixIcon: Icon(Icons.timer),
+                suffixText: 'horas',
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor introduce la frecuencia';
+                }
+                if (int.tryParse(value) == null || int.parse(value) <= 0) {
+                  return 'Por favor introduce un número válido de horas';
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(height: 16),
+            
+            // Campo de cantidad por dosis
+            TextFormField(
+              controller: _doseQuantityController,
+              decoration: InputDecoration(
+                labelText: 'Cantidad por dosis',
+                helperText: 'Cantidad a tomar cada vez',
+                prefixIcon: const Icon(Icons.medication_outlined),
+                suffixText: _getUnitLabel(),
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor introduce la cantidad por dosis';
+                }
+                if (int.tryParse(value) == null || int.parse(value) <= 0) {
+                  return 'Por favor introduce un número válido';
+                }
+                return null;
+              },
             ),
             
             const SizedBox(height: 16),
@@ -191,7 +214,7 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
                   Icons.medication : Icons.medication_liquid),
                 suffixText: _getUnitLabel(),
               ),
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.number, 
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Por favor introduce la cantidad';

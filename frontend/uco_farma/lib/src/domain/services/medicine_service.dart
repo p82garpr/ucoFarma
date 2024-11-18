@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/medicine_model.dart';
 
 class MedicineService {
-  final String _baseUrl = 'http://10.0.2.2:8000';
+  final String _baseUrl = 'http://192.168.1.141:8000';
   final String _cimaApiUrl = 'https://cima.aemps.es/cima/rest';
   // EJEMPLO CONSULTA DE UN MEDICAMENTO : https://cima.aemps.es/cima/rest/medicamento?cn=741512
 

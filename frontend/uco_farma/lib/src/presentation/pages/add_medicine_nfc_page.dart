@@ -14,6 +14,8 @@ class AddMedicineNFCPage extends StatefulWidget {
 class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
   final _formKey = GlobalKey<FormState>();
   final _quantityController = TextEditingController();
+  final _frequencyController = TextEditingController();
+  final _doseQuantityController = TextEditingController();
   bool _isLoading = false;
   String? _error;
   String _selectedType = 'solid';
@@ -108,6 +110,8 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
         token,
         int.parse(_quantityController.text),
         _selectedType,
+        int.parse(_frequencyController.text),
+        int.parse(_doseQuantityController.text),
       );
 
       if (!mounted) return;

@@ -17,6 +17,10 @@ class UserOut(UserBase):
     medicines: List[Medicine] = []
     shoplist: List[Shoplist] = []
 
+class UserOutID(UserOut):
+    user_id: str
+
 class Token(BaseModel):
     access_token: str
     token_type: str
+    user_id: str

@@ -37,8 +37,10 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         # Generar token de acceso JWT con el email del usuario como sujeto
         access_token = create_access_token(data={"sub": user["email"]})
         
+        
+        
         # Devolver el token de acceso y el tipo de token
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {"access_token": access_token, "token_type": "bearer", "user_id": str(user["_id"])}
     
     # Si las credenciales no son válidas, lanzar error 400
     raise HTTPException(status_code=400, detail="Credenciales inválidas")

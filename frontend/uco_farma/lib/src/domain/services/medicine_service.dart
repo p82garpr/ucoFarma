@@ -8,7 +8,7 @@ class MedicineService {
   // EJEMPLO CONSULTA DE UN MEDICAMENTO : https://cima.aemps.es/cima/rest/medicamento?cn=741512
 
 
-  Future<Map<String, dynamic>> addMedicine(String userId, String cn, String token, int quantity, String type) async {
+  Future<Map<String, dynamic>> addMedicine(String userId, String cn, String token, int quantity, String type, int frequency, int doseQuantity) async {
     try {
       final cimaResponse = await http.get(Uri.parse('$_cimaApiUrl/medicamento?cn=$cn'));
       
@@ -20,8 +20,8 @@ class MedicineService {
           name: cimaData['nombre'] ?? '',
           quantity: quantity,
           type: type,
-          frequency: '0',
-          dose: '0',
+          frequency: frequency.toString(),
+          dose: doseQuantity.toString(),
         );
 
         final response = await http.post(

@@ -12,8 +12,15 @@ class AddMedicineManualPage extends StatefulWidget {
 
 class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
   final _formKey = GlobalKey<FormState>();
+  // Código Nacional
   final _cnController = TextEditingController();
+  // Cantidad
   final _quantityController = TextEditingController();
+  // Frecuencia
+  final _frequencyController = TextEditingController();
+  // Dosis por toma
+  final _doseQuantityController = TextEditingController();
+
   bool _isLoading = false;
   String? _error;
   String _selectedType = 'solid'; // Por defecto sólido
@@ -58,6 +65,8 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
         token,
         int.parse(_quantityController.text),
         _selectedType,
+        int.parse(_frequencyController.text),
+        int.parse(_doseQuantityController.text),
       );
 
       if (!mounted) return;
@@ -163,8 +172,8 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
               TextFormField(
                 controller: _quantityController,
                 decoration: InputDecoration(
-                  labelText: 'Cantidad',
-                  helperText: 'Introduce la cantidad en ${_getUnitLabel()}',
+                  labelText: 'Nº de dosis',
+                  helperText: 'Introduce el numero de dosis en ${_getUnitLabel()}',
                   prefixIcon: Icon(_selectedType == 'solid' ? 
                     Icons.medication : Icons.medication_liquid),
                   suffixText: _getUnitLabel(),
@@ -173,6 +182,52 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor introduce la cantidad';
+                  }
+                  if (int.tryParse(value) == null || int.parse(value) <= 0) {
+                    return 'Por favor introduce un número válido';
+                  }
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              // Campo de frecuencia
+                TextFormField(
+                controller: _frequencyController,
+                decoration: const InputDecoration(
+                  labelText: 'Frecuencia',
+                  helperText: 'Cada cuántas horas se debe tomar',
+                  prefixIcon: Icon(Icons.timer),
+                  suffixText: 'horas',
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor introduce la frecuencia';
+                  }
+                  if (int.tryParse(value) == null || int.parse(value) <= 0) {
+                    return 'Por favor introduce un número válido de horas';
+                  }
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 16),
+              
+              // Campo de cantidad por dosis
+              TextFormField(
+                controller: _doseQuantityController,
+                decoration: InputDecoration(
+                  labelText: 'Cantidad por dosis',
+                  helperText: 'Cantidad a tomar cada vez',
+                  prefixIcon: const Icon(Icons.medication_outlined),
+                  suffixText: _getUnitLabel(),
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor introduce la cantidad por dosis';
                   }
                   if (int.tryParse(value) == null || int.parse(value) <= 0) {
                     return 'Por favor introduce un número válido';

@@ -12,8 +12,17 @@ class AddMedicineQRPage extends StatefulWidget {
 }
 
 class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
+
+  
   final _formKey = GlobalKey<FormState>();
+
+  // Cantidad
   final _quantityController = TextEditingController();
+  // Frecuencia
+  final _frequencyController = TextEditingController();
+  // Dosis por toma
+  final _doseQuantityController = TextEditingController();
+
   bool _isLoading = false;
   String? _error;
   String _selectedType = 'solid';
@@ -58,6 +67,8 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
         token,
         int.parse(_quantityController.text),
         _selectedType,
+        int.parse(_frequencyController.text),
+        int.parse(_doseQuantityController.text),
       );
 
       if (!mounted) return;

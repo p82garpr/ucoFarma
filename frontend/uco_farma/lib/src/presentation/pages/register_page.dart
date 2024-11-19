@@ -121,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     if (value == null || value.isEmpty) {
                       return 'Por favor ingrese su correo electrónico';
                     }
-                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                    if (!RegExp(r'^[a-zA-Z0-9.a-zA-ZáéíóúÁÉÍÓÚñÑ_]+@[a-zA-Z0-9]+\.[a-zA-Z]+')
                         .hasMatch(value)) {
                       return 'Por favor ingrese un correo electrónico válido';
                     }

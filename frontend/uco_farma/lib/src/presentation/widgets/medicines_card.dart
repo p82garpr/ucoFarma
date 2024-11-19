@@ -47,7 +47,7 @@ class MedicinesCard extends StatelessWidget {
                   children: [
                     Text(
                       medicine.name,
-                      style: theme.textTheme.titleLarge?.copyWith(
+                      style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),

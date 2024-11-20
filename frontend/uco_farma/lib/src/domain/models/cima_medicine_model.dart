@@ -93,15 +93,27 @@ class CimaMedicine {
         notas: json["notas"],
         materialesInf: json["materialesInf"],
         ema: json["ema"],
-        docs: List<Doc>.from(json["docs"].map((x) => Doc.fromJson(x))),
+        docs: json["docs"] != null 
+            ? List<Doc>.from(json["docs"].map((x) => Doc.fromJson(x))) 
+            : [],
         fotos: json["fotos"] != null 
             ? List<Foto>.from(json["fotos"].map((x) => Foto.fromJson(x))) 
             : [],
-        atcs: List<Atc>.from(json["atcs"].map((x) => Atc.fromJson(x))),
-        principiosActivos: List<Excipiente>.from(json["principiosActivos"].map((x) => Excipiente.fromJson(x))),
-        excipientes: List<Excipiente>.from(json["excipientes"].map((x) => Excipiente.fromJson(x))),
-        viasAdministracion: List<FormaFarmaceutica>.from(json["viasAdministracion"].map((x) => FormaFarmaceutica.fromJson(x))),
-        presentaciones: List<Presentacione>.from(json["presentaciones"].map((x) => Presentacione.fromJson(x))),
+        atcs: json["atcs"] != null 
+            ? List<Atc>.from(json["atcs"].map((x) => Atc.fromJson(x))) 
+            : [],
+        principiosActivos: json["principiosActivos"] != null 
+            ? List<Excipiente>.from(json["principiosActivos"].map((x) => Excipiente.fromJson(x))) 
+            : [],
+        excipientes: json["excipientes"] != null 
+            ? List<Excipiente>.from(json["excipientes"].map((x) => Excipiente.fromJson(x))) 
+            : [],
+        viasAdministracion: json["viasAdministracion"] != null 
+            ? List<FormaFarmaceutica>.from(json["viasAdministracion"].map((x) => FormaFarmaceutica.fromJson(x))) 
+            : [],
+        presentaciones: json["presentaciones"] != null 
+            ? List<Presentacione>.from(json["presentaciones"].map((x) => Presentacione.fromJson(x))) 
+            : [],
         formaFarmaceutica: FormaFarmaceutica.fromJson(json["formaFarmaceutica"]),
         formaFarmaceuticaSimplificada: FormaFarmaceutica.fromJson(json["formaFarmaceuticaSimplificada"]),
         vtm: FormaFarmaceutica.fromJson(json["vtm"]),

@@ -107,4 +107,3 @@ class MedicineService {
 }
 
 
-//TODO Hacer una funcion para rescartar la informacion de una medicina en CIMA dada el cn

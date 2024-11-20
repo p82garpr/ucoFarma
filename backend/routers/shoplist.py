@@ -15,16 +15,18 @@ async def add_shoplist(user_id: str, cn: str, token: str = Depends(oauth2_scheme
     Agregar un medicamento a la lista de compras de un usuario.
 
     - **user_id**: ID del usuario.
-    - **shoplist**: Objeto del medicamento que se agregará a la lista de compras.
+    - **cn**: código nacional (CN) del medicamento que se agregará a la lista de compras.
     - **token**: Token de autenticación JWT.
     
-    Si el medicamento ya existe en la lista de compras del usuario, su cantidad se actualiza sumando la cantidad proporcionada.
+    Si el medicamento ya existe en la lista de medicinas del usuario y no estaba en la lista de compras, se agrega a esta.
     
     Devuelve el usuario con la lista de compras actualizada.
     
     Control de errores:
     - Lanza un error 401 si el token es inválido.
     - Lanza un error 402 si el usuario no se encuentra en la base de datos.
+    - Lanza un error 403 si el medicamento no se encuentra en la lista de medicinas del usuario.
+    - Lanza un error 403 si el medicamento ya está en la lista de compras del usuario.
     """
     payload = verify_token(token)
     if payload is None:

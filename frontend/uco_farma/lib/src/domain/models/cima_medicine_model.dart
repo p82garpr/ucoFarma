@@ -13,6 +13,7 @@ class CimaMedicine {
     String nombre;
     String pactivos;
     String labtitular;
+    String labcomercializador;
     String cpresc;
     Estado estado;
     bool comerc;
@@ -28,8 +29,9 @@ class CimaMedicine {
     bool materialesInf;
     bool ema;
     List<Doc> docs;
+    List<Foto> fotos;
     List<Atc> atcs;
-    List<PrincipiosActivo> principiosActivos;
+    List<Excipiente> principiosActivos;
     List<Excipiente> excipientes;
     List<FormaFarmaceutica> viasAdministracion;
     List<Presentacione> presentaciones;
@@ -43,6 +45,7 @@ class CimaMedicine {
         required this.nombre,
         required this.pactivos,
         required this.labtitular,
+        required this.labcomercializador,
         required this.cpresc,
         required this.estado,
         required this.comerc,
@@ -58,6 +61,7 @@ class CimaMedicine {
         required this.materialesInf,
         required this.ema,
         required this.docs,
+        required this.fotos,
         required this.atcs,
         required this.principiosActivos,
         required this.excipientes,
@@ -74,6 +78,7 @@ class CimaMedicine {
         nombre: json["nombre"],
         pactivos: json["pactivos"],
         labtitular: json["labtitular"],
+        labcomercializador: json["labcomercializador"],
         cpresc: json["cpresc"],
         estado: Estado.fromJson(json["estado"]),
         comerc: json["comerc"],
@@ -89,8 +94,11 @@ class CimaMedicine {
         materialesInf: json["materialesInf"],
         ema: json["ema"],
         docs: List<Doc>.from(json["docs"].map((x) => Doc.fromJson(x))),
+        fotos: json["fotos"] != null 
+            ? List<Foto>.from(json["fotos"].map((x) => Foto.fromJson(x))) 
+            : [],
         atcs: List<Atc>.from(json["atcs"].map((x) => Atc.fromJson(x))),
-        principiosActivos: List<PrincipiosActivo>.from(json["principiosActivos"].map((x) => PrincipiosActivo.fromJson(x))),
+        principiosActivos: List<Excipiente>.from(json["principiosActivos"].map((x) => Excipiente.fromJson(x))),
         excipientes: List<Excipiente>.from(json["excipientes"].map((x) => Excipiente.fromJson(x))),
         viasAdministracion: List<FormaFarmaceutica>.from(json["viasAdministracion"].map((x) => FormaFarmaceutica.fromJson(x))),
         presentaciones: List<Presentacione>.from(json["presentaciones"].map((x) => Presentacione.fromJson(x))),
@@ -105,6 +113,7 @@ class CimaMedicine {
         "nombre": nombre,
         "pactivos": pactivos,
         "labtitular": labtitular,
+        "labcomercializador": labcomercializador,
         "cpresc": cpresc,
         "estado": estado.toJson(),
         "comerc": comerc,
@@ -120,6 +129,7 @@ class CimaMedicine {
         "materialesInf": materialesInf,
         "ema": ema,
         "docs": List<dynamic>.from(docs.map((x) => x.toJson())),
+        "fotos": List<dynamic>.from(fotos.map((x) => x.toJson())),
         "atcs": List<dynamic>.from(atcs.map((x) => x.toJson())),
         "principiosActivos": List<dynamic>.from(principiosActivos.map((x) => x.toJson())),
         "excipientes": List<dynamic>.from(excipientes.map((x) => x.toJson())),
@@ -210,6 +220,7 @@ class Excipiente {
     String cantidad;
     String unidad;
     int orden;
+    String? codigo;
 
     Excipiente({
         required this.id,
@@ -217,6 +228,7 @@ class Excipiente {
         required this.cantidad,
         required this.unidad,
         required this.orden,
+        this.codigo,
     });
 
     factory Excipiente.fromJson(Map<String, dynamic> json) => Excipiente(
@@ -225,6 +237,7 @@ class Excipiente {
         cantidad: json["cantidad"],
         unidad: json["unidad"],
         orden: json["orden"],
+        codigo: json["codigo"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -233,6 +246,7 @@ class Excipiente {
         "cantidad": cantidad,
         "unidad": unidad,
         "orden": orden,
+        "codigo": codigo,
     };
 }
 
@@ -253,6 +267,30 @@ class FormaFarmaceutica {
     Map<String, dynamic> toJson() => {
         "id": id,
         "nombre": nombre,
+    };
+}
+
+class Foto {
+    String tipo;
+    String url;
+    int fecha;
+
+    Foto({
+        required this.tipo,
+        required this.url,
+        required this.fecha,
+    });
+
+    factory Foto.fromJson(Map<String, dynamic> json) => Foto(
+        tipo: json["tipo"],
+        url: json["url"],
+        fecha: json["fecha"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "tipo": tipo,
+        "url": url,
+        "fecha": fecha,
     };
 }
 
@@ -285,45 +323,5 @@ class Presentacione {
         "estado": estado.toJson(),
         "comerc": comerc,
         "psum": psum,
-    };
-}
-
-class PrincipiosActivo {
-    int id;
-    String codigo;
-    String nombre;
-    String cantidad;
-    String unidad;
-    int orden;
-    int? listaEstupefacientes;
-
-    PrincipiosActivo({
-        required this.id,
-        required this.codigo,
-        required this.nombre,
-        required this.cantidad,
-        required this.unidad,
-        required this.orden,
-        this.listaEstupefacientes,
-    });
-
-    factory PrincipiosActivo.fromJson(Map<String, dynamic> json) => PrincipiosActivo(
-        id: json["id"],
-        codigo: json["codigo"],
-        nombre: json["nombre"],
-        cantidad: json["cantidad"],
-        unidad: json["unidad"],
-        orden: json["orden"],
-        listaEstupefacientes: json["listaEstupefacientes"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "id": id,
-        "codigo": codigo,
-        "nombre": nombre,
-        "cantidad": cantidad,
-        "unidad": unidad,
-        "orden": orden,
-        "listaEstupefacientes": listaEstupefacientes,
     };
 }

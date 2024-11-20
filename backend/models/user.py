@@ -18,11 +18,7 @@ class Medicine(BaseModel):
     quantity: int
     type: MedicineType
     doses: Optional[List[Dose]] = None
-
-class Shoplist(BaseModel):
-    cn: str
-    name: str
-    quantity: int
+    wished: bool = False
 
 class User(BaseModel):
     email: EmailStr
@@ -30,4 +26,3 @@ class User(BaseModel):
     fullname: str
     birthdate: str
     medicines: Optional[List[Medicine]] = []
-    shoplist: Optional[List[Medicine]] = []

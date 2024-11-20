@@ -6,12 +6,11 @@ from schemas.user import UserCreate, UserOut
 from database import db
 from auth.jwt_handler import verify_token
 from routers.auth import oauth2_scheme
-from models.user import Shoplist
 
 router = APIRouter()
 
-@router.post("/{user_id}/add-shoplist", response_model=UserOut)
-async def add_shoplist(user_id: str, shoplist: Shoplist, token: str = Depends(oauth2_scheme)):
+@router.put("/add-shoplist/{cn}", response_model=UserOut)
+async def add_shoplist(user_id: str, cn: str, token: str = Depends(oauth2_scheme)):
     """
     Agregar un medicamento a la lista de compras de un usuario.
 
@@ -32,27 +31,28 @@ async def add_shoplist(user_id: str, shoplist: Shoplist, token: str = Depends(oa
         raise HTTPException(status_code=401, detail="Token inválido")
     
     user = await db["users"].find_one({"_id": ObjectId(user_id)})
-    if user:
-        if "shoplist" not in user:
-            user["shoplist"] = []
-            
-        # Verificar si el medicamento ya existe en la lista de compras
-        for item in user["shoplist"]:
-            if item["cn"] == shoplist.cn:
-                # Si ya existe, actualizar cantidad
-                item["quantity"] += shoplist.quantity
+    if not user: 
+        raise HTTPException(status_code=402, detail="Usuario no encontrado")
+
+    medicine_found = False
+    for med in user["medicines"]:
+        if med["cn"] == cn:
+            if med["wished"] == False:
+                med["wished"] = True
+                medicine_found = True
                 break
-        else:
-            # Si no existe, agregar a la lista
-            user["shoplist"].append(shoplist.model_dump())
-            
-        await db["users"].update_one({"_id": ObjectId(user_id)}, {"$set": user})
-        return user
+            elif med["wished"] == True:
+                raise HTTPException(status_code=403, detail="Medicamento ya agregado a la lista de compras")
+    
+    if not medicine_found:
+        raise HTTPException(status_code=403, detail="Medicamento no encontrado")
+    
+    await db["users"].update_one({"_id": ObjectId(user_id)}, {"$set": user})
+    return user
         
-    raise HTTPException(status_code=402, detail="Usuario no encontrado")
+    
 
-
-@router.delete("/{user_id}/delete-shoplist/{cn}", response_model=UserOut)
+@router.delete("/delete-shoplist/{cn}", response_model=UserOut)
 async def delete_shoplist(user_id: str, cn: str, token: str = Depends(oauth2_scheme)):
     """
     Eliminar un medicamento específico de la lista de compras de un usuario.
@@ -78,15 +78,15 @@ async def delete_shoplist(user_id: str, cn: str, token: str = Depends(oauth2_sch
     if not user:
         raise HTTPException(status_code=402, detail="Usuario no encontrado")
     
-    if "shoplist" not in user:
-        raise HTTPException(status_code=403, detail="Lista de compras vacía")
-    
     medicine_found = False
-    for med in user["shoplist"]:
+    for med in user["medicines"]:
         if med["cn"] == cn:
-            user["shoplist"].remove(med)
-            medicine_found = True
-            break
+            if med["wished"] == True:
+                med["wished"] = False
+                medicine_found = True
+                break
+            elif med["wished"] == False:
+                raise HTTPException(status_code=403, detail="Medicamento no agregado a la lista de compras")
 
     if not medicine_found:
         raise HTTPException(status_code=403, detail="Medicina no encontrada en la lista de compras")

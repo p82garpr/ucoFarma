@@ -9,7 +9,7 @@ from routers.auth import oauth2_scheme
 
 router = APIRouter()
 
-@router.put("/add-shoplist/{cn}", response_model=UserOut)
+@router.put("/{user_id}/add-shoplist", response_model=UserOut)
 async def add_shoplist(user_id: str, cn: str, token: str = Depends(oauth2_scheme)):
     """
     Agregar un medicamento a la lista de compras de un usuario.
@@ -54,7 +54,7 @@ async def add_shoplist(user_id: str, cn: str, token: str = Depends(oauth2_scheme
         
     
 
-@router.delete("/delete-shoplist/{cn}", response_model=UserOut)
+@router.delete("/{user_id}/delete-shoplist", response_model=UserOut)
 async def delete_shoplist(user_id: str, cn: str, token: str = Depends(oauth2_scheme)):
     """
     Eliminar un medicamento específico de la lista de compras de un usuario.

@@ -6,6 +6,7 @@ import 'package:uco_farma/src/presentation/pages/register_page.dart';
 import 'package:uco_farma/src/presentation/pages/home_page.dart';
 import 'package:uco_farma/src/presentation/pages/add_medicine_qr_page.dart';
 import 'package:uco_farma/src/presentation/pages/add_medicine_nfc_page.dart';
+import 'package:uco_farma/src/presentation/pages/profile_page.dart';
 
 class AppRoutes {
   static const String initial = '/';
@@ -15,6 +16,7 @@ class AppRoutes {
   static const String addMedicineQr = '/add-medicine-qr';
   static const String addMedicineNfc = '/add-medicine-nfc';
   static const String medicineInfo = '/medicine-info';
+  static const String profile = '/profile';
 
   static Map<String, WidgetBuilder> get routes => {
         initial: (context) => const LoginPage(),
@@ -23,6 +25,7 @@ class AppRoutes {
         addMedicineManual: (context) => const AddMedicineManualPage(),
         addMedicineQr: (context) => const AddMedicineQRPage(),
         addMedicineNfc: (context) => const AddMedicineNFCPage(),
+        profile: (context) => const ProfilePage(),
         medicineInfo: (context) => const MedicineInfoPage(cn: ''),
       };
 }

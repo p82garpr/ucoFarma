@@ -5,10 +5,14 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from schemas.user import Token
 from auth.jwt_handler import create_access_token, verify_token
 from database import db
+from pydantic import BaseModel
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 router = APIRouter()
+
+class PasswordChange(BaseModel):
+    new_password: str
 
 @router.post("/login", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -44,3 +48,21 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     
     # Si las credenciales no son válidas, lanzar error 400
     raise HTTPException(status_code=400, detail="Credenciales inválidas")
+@router.put("/change-password")
+async def change_password(
+    password_data: PasswordChange,
+    current_user: str = Depends(oauth2_scheme)
+):
+    payload = verify_token(current_user)
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Token inválido")
+    
+    result = await db["users"].update_one(
+        {"email": payload["sub"]},
+        {"$set": {"password": password_data.new_password}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=400, detail="No se pudo actualizar la contraseña")
+    
+    return {"message": "Contraseña actualizada exitosamente"}

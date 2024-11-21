@@ -112,7 +112,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> addShoplist(String cn) async {
+   Future<bool> addShoplist(String cn) async {
     if (_token == null) return false;
     try {
       final result = await _authService.addShoplist(_user!.id, cn, _token!);
@@ -152,4 +152,27 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
   }
+  
+  Future<bool> changePassword(String newPassword) async {
+    try {
+      if (_token == null) {
+        _error = 'No hay sesión activa';
+        return false;
+      }
+
+      final result = await _authService.changePassword(newPassword, _token!);
+      
+      if (result['success']) {
+        _error = null;
+        return true;
+      } else {
+        _error = result['message'].toString();
+        return false;
+      }
+    } catch (e) {
+      _error = e.toString();
+      return false;
+    }
+  }
+  
 }

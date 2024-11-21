@@ -70,12 +70,11 @@ class HomePage extends StatelessWidget {
                     return MedicinesCard(
                       medicine: medicine,
                       onTap: () {
-                        // TODO: Implementar acción al tocar la tarjeta
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    const MedicineInfoPage()));
+                                    MedicineInfoPage(cn: medicine.cn)));
                       },
                     );
                   },

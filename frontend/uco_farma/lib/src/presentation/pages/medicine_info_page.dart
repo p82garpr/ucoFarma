@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import '../widgets/general_info_widget.dart';
 
 class MedicineInfoPage extends StatelessWidget {
-  const MedicineInfoPage({super.key});
+  final String cn;
+  
+  const MedicineInfoPage({
+    super.key,
+    required this.cn,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +26,7 @@ class MedicineInfoPage extends StatelessWidget {
             icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary),
           ),
           bottom: TabBar(
-            //padding: const EdgeInsets.symmetric(horizontal: 0),
-            //labelPadding: const EdgeInsets.symmetric(horizontal: 0),
-            //isScrollable: true,
             tabAlignment: TabAlignment.center,
-
             tabs: const [
               Tab(
                 icon: Icon(Icons.info_outlined, size: 17),
@@ -42,7 +44,14 @@ class MedicineInfoPage extends StatelessWidget {
             labelColor: theme.colorScheme.onPrimary,
           ),
         ),
-        body: const Text('Información del medicamento'),
+        body: TabBarView(
+          children: [
+            GeneralInfoWidget(cn: cn),
+            const Center(child: Text('Composición')),
+            const Center(child: Text('Dosis')),
+            const Center(child: Text('Documentos')),
+          ],
+        ),
       ),
     );
   }

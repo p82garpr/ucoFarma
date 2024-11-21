@@ -26,28 +26,13 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
         backgroundColor: theme.colorScheme.primary,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: theme.colorScheme.onPrimary,
+          onPressed: () => Navigator.pop(context),
+        ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.home),
-            color: theme.colorScheme.onPrimary,
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.edit),
-            color: theme.colorScheme.onPrimary,
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Función de edición próximamente'),
-                ),
-              );
-            },
-          ),
+            
           IconButton(
             icon: const Icon(Icons.lock_outline),
             color: theme.colorScheme.onPrimary,

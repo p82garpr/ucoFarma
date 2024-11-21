@@ -178,7 +178,7 @@ class HomePage extends StatelessWidget {
                     color: theme.colorScheme.primary),
                 title: Text('Perfil', style: theme.textTheme.bodyLarge),
                 onTap: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const ProfilePage()),
                   );
@@ -237,7 +237,7 @@ class HomePage extends StatelessWidget {
                 );
                 */
               case 3:
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ProfilePage()),
                 );

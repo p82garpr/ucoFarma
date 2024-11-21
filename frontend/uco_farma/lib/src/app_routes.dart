@@ -25,8 +25,7 @@ class AppRoutes {
         addMedicineManual: (context) => const AddMedicineManualPage(),
         addMedicineQr: (context) => const AddMedicineQRPage(),
         addMedicineNfc: (context) => const AddMedicineNFCPage(),
-        medicineInfo: (context) => const MedicineInfoPage(),
         profile: (context) => const ProfilePage(),
-
+        medicineInfo: (context) => const MedicineInfoPage(cn: ''),
       };
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uco_farma/src/domain/models/medicine_model.dart';
+import 'package:uco_farma/src/presentation/pages/medicine_info_page.dart';
 
 class MedicinesCard extends StatelessWidget {
   final Medicine medicine;
@@ -26,7 +27,14 @@ class MedicinesCard extends StatelessWidget {
       elevation: 4,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MedicineInfoPage(cn: medicine.cn),
+            ),
+          );
+        },
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -47,7 +55,7 @@ class MedicinesCard extends StatelessWidget {
                   children: [
                     Text(
                       medicine.name,
-                      style: theme.textTheme.titleLarge?.copyWith(
+                      style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),

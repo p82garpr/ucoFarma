@@ -12,7 +12,7 @@ class AuthService {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: {
-          'username': email,    // Cambiado de 'correo' a 'username'
+          'username': email, // Cambiado de 'correo' a 'username'
           'password': password, // Cambiado de 'contrasena' a 'password'
         },
       );
@@ -40,7 +40,8 @@ class AuthService {
     }
   }
 
-  Future<Map<String, dynamic>> register(String fullName, String email, String password, String birthdate) async {
+  Future<Map<String, dynamic>> register(
+      String fullName, String email, String password, String birthdate) async {
     try {
       /*print('Enviando datos: ${json.encode({
         'fullname': fullName,
@@ -88,7 +89,8 @@ class AuthService {
       } catch (e) {
         return {
           'success': false,
-          'message': 'Error al procesar la respuesta del servidor: ${e.toString()}',
+          'message':
+              'Error al procesar la respuesta del servidor: ${e.toString()}',
         };
       }
     } catch (e) {
@@ -127,6 +129,7 @@ class AuthService {
       };
     }
   }
+
   Future<Map<String, dynamic>> changePassword(String newPassword, String token) async {
     try {
       final response = await http.put(
@@ -160,4 +163,65 @@ class AuthService {
       };
     }
   }
+  
+  Future<Map<String, dynamic>> addShoplist(
+      String userId, String cn, String token) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$_baseUrl/shoplist/$userId/add-shoplist'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({'cn': cn}),
+      );
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'data': json.decode(response.body),
+        };
+      } else {
+        return {
+          'success': false,
+          'message': 'Error al agregar medicamento a la lista de compras',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': e.toString(),
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> deleteShoplist(
+      String userId, String cn, String token) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$_baseUrl/shoplist/$userId/delete-shoplist'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({'cn': cn}),
+      );
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'data': json.decode(response.body),
+        };
+      } else {
+        return {
+          'success': false,
+          'message': 'Error al eliminar medicamento de la lista de compras',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': e.toString(),
+      };
+    }
+  }
+  
 }

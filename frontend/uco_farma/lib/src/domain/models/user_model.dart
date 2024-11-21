@@ -1,4 +1,4 @@
-import '../models/medicine_model.dart'; 
+import '../models/medicine_model.dart';
 
 class User {
   final String id;

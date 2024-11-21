@@ -8,14 +8,21 @@ class MedicineService {
   final String _cimaApiUrl = 'https://cima.aemps.es/cima/rest';
   // EJEMPLO CONSULTA DE UN MEDICAMENTO : https://cima.aemps.es/cima/rest/medicamento?cn=741512
 
-
-  Future<Map<String, dynamic>> addMedicine(String userId, String cn, String token, int quantity, String type, int frequency, int doseQuantity) async {
+  Future<Map<String, dynamic>> addMedicine(
+      String userId,
+      String cn,
+      String token,
+      int quantity,
+      String type,
+      int frequency,
+      int doseQuantity) async {
     try {
-      final cimaResponse = await http.get(Uri.parse('$_cimaApiUrl/medicamento?cn=$cn'));
-      
+      final cimaResponse =
+          await http.get(Uri.parse('$_cimaApiUrl/medicamento?cn=$cn'));
+
       if (cimaResponse.statusCode == 200) {
         final cimaData = json.decode(cimaResponse.body);
-        
+
         final medicine = Medicine(
           cn: cn,
           name: cimaData['nombre'] ?? '',

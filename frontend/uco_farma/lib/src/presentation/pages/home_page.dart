@@ -7,6 +7,7 @@ import '../widgets/medicines_card.dart';
 import 'add_medicine_manual_page.dart';
 import 'add_medicine_qr_page.dart';
 import 'medicine_info_page.dart';
+import 'profile_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -176,7 +177,12 @@ class HomePage extends StatelessWidget {
                 leading: Icon(Icons.account_circle,
                     color: theme.colorScheme.primary),
                 title: Text('Perfil', style: theme.textTheme.bodyLarge),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProfilePage()),
+                  );
+                },
               ),
               ListTile(
                 leading:
@@ -229,11 +235,12 @@ class HomePage extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => const ChatBotPage()),
                 );
+                */
               case 3:
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const ProfilePage()),
-                );*/
+                );
               }
             },
             destinations: <NavigationDestination>[

@@ -127,4 +127,37 @@ class AuthService {
       };
     }
   }
+  Future<Map<String, dynamic>> changePassword(String newPassword, String token) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$_baseUrl/auth/change-password'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'new_password': newPassword,
+        }),
+      );
+
+      final decodedResponse = jsonDecode(response.body);
+      
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message': decodedResponse['message'],
+        };
+      } else {
+        return {
+          'success': false,
+          'message': decodedResponse['detail'] ?? 'Error al actualizar la contraseña',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Error de conexión: ${e.toString()}',
+      };
+    }
+  }
 }

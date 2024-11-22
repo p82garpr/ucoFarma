@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/medicine_provider.dart';
+import '../providers/auth_provider.dart';
+import '../providers/shoplist_provider.dart';
 
 class GeneralInfoWidget extends StatefulWidget {
   final String cn;
@@ -124,7 +126,7 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
           ),
           const SizedBox(height: 16),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 flex: 3,
@@ -132,43 +134,93 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      'Nº Registro: ${medicine.nregistro}',
-                      style: theme.textTheme.bodyLarge,
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'CN: ',
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          TextSpan(
+                            text: widget.cn,
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      'Laboratorio: ${medicine.labtitular}',
-                      style: theme.textTheme.bodyLarge,
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Nº Registro: ',
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          TextSpan(
+                            text: medicine.nregistro,
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Laboratorio: ',
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          TextSpan(
+                            text: medicine.labtitular,
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.colorScheme.outline),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: medicine.fotos.isNotEmpty
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          medicine.fotos.first.url,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Icon(getMedicineIcon(), 
-                                  size: 50, 
-                                  color: theme.colorScheme.primary),
-                        ),
-                      )
-                    : Icon(getMedicineIcon(), 
-                        size: 50, 
-                        color: theme.colorScheme.primary),
-              ),
             ],
+          ),
+          const SizedBox(height: 24),
+          Center(
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                border: Border.all(color: theme.colorScheme.outline),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: medicine.fotos.isNotEmpty
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        medicine.fotos.first.url,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Icon(
+                              getMedicineIcon(),
+                              size: 100,
+                              color: theme.colorScheme.primary,
+                            ),
+                      ),
+                    )
+                  : Icon(
+                      getMedicineIcon(),
+                      size: 100,
+                      color: theme.colorScheme.primary,
+                    ),
+            ),
           ),
           const SizedBox(height: 24),
           Container(
@@ -211,6 +263,115 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
                   description: 'Este icono indica si el medicamento requiere receta médica para su dispensación. Si está en verde, necesitarás una receta médica para obtener este medicamento.',
                 ),
               ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Center(
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                final medicineProvider = Provider.of<MedicineProvider>(context, listen: false);
+                
+                final userId = authProvider.user?.id;
+                final token = authProvider.token;
+
+                if (userId == null || token == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Error: Usuario no autenticado')),
+                  );
+                  return;
+                }
+
+                // Mostrar diálogo de confirmación
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Confirmar eliminación'),
+                    content: const Text('¿Estás seguro de que deseas eliminar este medicamento?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancelar'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        style: TextButton.styleFrom(
+                          foregroundColor: theme.colorScheme.error,
+                        ),
+                        child: const Text('Eliminar'),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirm != true || !context.mounted) return;
+
+                final success = await medicineProvider.deleteMedicine(userId, widget.cn, token);
+
+                if (!context.mounted) return;
+
+                if (success) {
+                  await authProvider.refreshUserData();
+                  if (!context.mounted) return;
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Medicamento eliminado con éxito')),
+                  );
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(medicineProvider.error ?? 'Error al eliminar el medicamento')),
+                  );
+                }
+              },
+              icon: const Icon(Icons.delete),
+              label: const Text('Eliminar Medicamento'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Center(
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                final shoplistProvider = Provider.of<ShoplistProvider>(context, listen: false);
+                
+                final userId = authProvider.user?.id;
+                final token = authProvider.token;
+
+                if (userId == null || token == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Error: Usuario no autenticado')),
+                  );
+                  return;
+                }
+
+                final success = await shoplistProvider.addToShoplist(userId, widget.cn, token);
+
+                if (!context.mounted) return;
+
+                if (success) {
+                  await authProvider.refreshUserData();
+                  if (!context.mounted) return;
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Medicamento añadido a Shoplist')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(shoplistProvider.error ?? 'Error al añadir a Shoplist')),
+                  );
+                }
+              },
+              icon: const Icon(Icons.shopping_cart_outlined),
+              label: const Text('Añadir a Shoplist'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.primaryContainer,
+                foregroundColor: theme.colorScheme.onPrimaryContainer,
+              ),
             ),
           ),
         ],

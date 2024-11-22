@@ -86,7 +86,7 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
       if (mounted) setState(() => _isLoading = false);
     }
   }
-  //TODO: añadir control de error de q solo acepte codigos de 6 digitos
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

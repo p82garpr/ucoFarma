@@ -8,6 +8,14 @@ class AppTheme {
         seedColor: Colors.lightGreen,
         brightness: Brightness.light,
       ),
+      navigationBarTheme: NavigationBarThemeData(
+        labelTextStyle: WidgetStateProperty.all(
+          const TextStyle(color: Colors.white),
+        ),
+        iconTheme: WidgetStateProperty.all(
+          const IconThemeData(color: Colors.white),
+        ),
+      ),
       // Personalización de los botones elevados
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(

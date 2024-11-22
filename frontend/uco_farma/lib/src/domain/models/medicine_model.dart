@@ -5,6 +5,7 @@ class Medicine {
   final String type;
   final String frequency;
   final String dose;
+  final bool wished;
   
   Medicine({
     required this.cn,
@@ -13,6 +14,7 @@ class Medicine {
     required this.type,
     required this.frequency,
     required this.dose,
+    this.wished = false,
   });
 
   factory Medicine.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class Medicine {
       type: json['type'] ?? 'solid',
       frequency: json['frequency'] ?? '',
       dose: json['dose'] ?? '',
+      wished: json['wished'] ?? false,
     );
   }
 
@@ -34,6 +37,7 @@ class Medicine {
       'type': type,
       'frequency': frequency,
       'dose': dose,
+      'wished': wished,
     };
   }
 } 

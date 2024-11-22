@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/general_info_widget.dart';
+import '../widgets/composition_info_widget.dart';
 
 class MedicineInfoPage extends StatelessWidget {
   final String cn;
@@ -47,7 +48,7 @@ class MedicineInfoPage extends StatelessWidget {
         body: TabBarView(
           children: [
             GeneralInfoWidget(cn: cn),
-            const Center(child: Text('Composición')),
+            CompositionInfoWidget(cn: cn),
             const Center(child: Text('Dosis')),
             const Center(child: Text('Documentos')),
           ],

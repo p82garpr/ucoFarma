@@ -53,6 +53,18 @@ async def change_password(
     password_data: PasswordChange,
     current_user: str = Depends(oauth2_scheme)
 ):
+    """
+    Actualizar la contraseña del usuario autenticado.
+
+    - **password_data**: Nueva contraseña del usuario.
+    - **current_user**: Token de autenticación JWT del usuario actual.
+    
+    Devuelve un mensaje de confirmación si la contraseña se actualizó correctamente.
+    
+    Control de errores:
+    - Lanza un error 401 si el token es inválido.
+    - Lanza un error 400 si no se pudo actualizar la contraseña en la base de datos.
+    """
     payload = verify_token(current_user)
     if payload is None:
         raise HTTPException(status_code=401, detail="Token inválido")

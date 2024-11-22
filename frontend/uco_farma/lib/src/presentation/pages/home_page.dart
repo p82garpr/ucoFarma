@@ -7,6 +7,7 @@ import '../widgets/medicines_card.dart';
 import 'add_medicine_manual_page.dart';
 import 'add_medicine_qr_page.dart';
 import 'medicine_info_page.dart';
+import 'profile_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -70,12 +71,11 @@ class HomePage extends StatelessWidget {
                     return MedicinesCard(
                       medicine: medicine,
                       onTap: () {
-                        // TODO: Implementar acción al tocar la tarjeta
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    const MedicineInfoPage()));
+                                    MedicineInfoPage(cn: medicine.cn)));
                       },
                     );
                   },
@@ -176,7 +176,12 @@ class HomePage extends StatelessWidget {
                 leading: Icon(Icons.account_circle,
                     color: theme.colorScheme.primary),
                 title: Text('Perfil', style: theme.textTheme.bodyLarge),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProfilePage()),
+                  );
+                },
               ),
               ListTile(
                 leading:
@@ -229,11 +234,12 @@ class HomePage extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => const ChatBotPage()),
                 );
+                */
               case 3:
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ProfilePage()),
-                );*/
+                );
               }
             },
             destinations: <NavigationDestination>[

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../models/medicine_model.dart';
 //import '../models/cima_medicine_model.dart';
 
 
@@ -15,34 +16,48 @@ class MedicineService {
       int quantity,
       String type,
       int frequency,
-      int doseQuantity) async {
+      double doseQuantity,
+      bool wished,
+      ) async {
     try {
-      final response = await http.post(
-        Uri.parse('$_baseUrl/medicines/$userId/add-medicine'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: json.encode({
-          'cn': cn,
-          'quantity': quantity,
-          'type': type,
-          'frequency': frequency,
-          'dose_quantity': doseQuantity,
-          'wished': false,
-        }),
-      );
+      final cimaResponse =
+          await http.get(Uri.parse('$_cimaApiUrl/medicamento?cn=$cn'));
 
-      if (response.statusCode == 200) {
-        return {
-          'success': true,
-          'data': json.decode(response.body),
-        };
+      if (cimaResponse.statusCode == 200) {
+        final cimaData = json.decode(cimaResponse.body);
+
+        final medicine = Medicine(
+          cn: cn,
+          name: cimaData['nombre'] ?? '',
+          quantity: quantity,
+          type: type,
+          doses: [Dose(frequency: frequency, quantity: doseQuantity)],
+          wished: false,
+        );
+
+        final response = await http.post(
+          Uri.parse('$_baseUrl/medicines/$userId/add-medicine'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: json.encode(medicine.toJson()),
+        );
+        if (response.statusCode == 200) {
+          return {
+            'success': true,
+            'data': json.decode(response.body),
+          };
+        } else {
+          return {
+            'success': false,
+            'message': 'Error al añadir el medicamento',
+          };
+        }
       } else {
-        final error = json.decode(response.body);
         return {
           'success': false,
-          'message': error['detail'] ?? 'Error al añadir el medicamento',
+          'message': 'Medicamento no encontrado en CIMA',
         };
       }
     } catch (e) {
@@ -93,34 +108,6 @@ class MedicineService {
           'message': 'Error de conexión con CIMA. Compruebe su conexión a Internet.',
         };
       }
-      return {
-        'success': false,
-        'message': e.toString(),
-      };
-    }
-  }
-
-  Future<Map<String, dynamic>> deleteMedicine(String userId, String cn, String token) async {
-    try {
-      final response = await http.delete(
-        Uri.parse('$_baseUrl/medicines/$userId/delete-medicine/$cn'),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        return {
-          'success': true,
-          'data': json.decode(response.body),
-        };
-      } else {
-        return {
-          'success': false,
-          'message': 'Error al eliminar el medicamento',
-        };
-      }
-    } catch (e) {
       return {
         'success': false,
         'message': e.toString(),

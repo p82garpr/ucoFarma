@@ -22,6 +22,11 @@ async def create_user(user: UserCreate):
     Devuelve el nuevo usuario creado, incluyendo solo los datos públicos definidos en el esquema `UserOut`.
     
     """
+    
+    #comprobar si el email ya existe
+    if await db["users"].find_one({"email": user.email}):
+        raise HTTPException(status_code=400, detail="El email ya está registrado")
+    
     # Hashea la contraseña antes de almacenarla (ej: bcrypt.hash)
     new_user = await db["users"].insert_one(user.dict())
     

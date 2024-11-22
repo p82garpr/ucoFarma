@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../models/medicine_model.dart';
 
 class User {
@@ -18,8 +20,8 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['user_id'] ?? '',
-      email: json['email'] ?? '',
-      fullname: json['fullname'] ?? '',
+      email: utf8.decode(json['email'].toString().codeUnits),
+      fullname: utf8.decode(json['fullname'].toString().codeUnits),
       birthdate: json['birthdate'],
       medicines: (json['medicines'] as List<dynamic>?)
           ?.map((med) => Medicine.fromJson(med))

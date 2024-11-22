@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:uco_farma/src/presentation/widgets/documents_widget.dart';
+import 'package:uco_farma/src/presentation/widgets/doses_widget.dart';
 import '../widgets/general_info_widget.dart';
 
 class MedicineInfoPage extends StatelessWidget {
   final String cn;
-  
+
   const MedicineInfoPage({
     super.key,
     required this.cn,
@@ -49,8 +51,8 @@ class MedicineInfoPage extends StatelessWidget {
           children: [
             GeneralInfoWidget(cn: cn),
             const Center(child: Text('Composición')),
-            const Center(child: Text('Dosis')),
-            const Center(child: Text('Documentos')),
+            DosesWidget(cn: cn),
+            DocumentsWidget(cn: cn),
           ],
         ),
       ),

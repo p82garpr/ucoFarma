@@ -88,6 +88,15 @@ class MedicineForm extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
+          const Text(
+            'Campos opcionales:',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 8),
           TextFormField(
             controller: frequencyController,
             decoration: const InputDecoration(
@@ -101,7 +110,7 @@ class MedicineForm extends StatelessWidget {
               if (value == null || value.isEmpty) {
                 return 'Por favor introduce la frecuencia';
               }
-              if (int.tryParse(value) == null || int.parse(value) <= 0) {
+              if (int.tryParse(value) == null) {
                 return 'Por favor introduce un número válido de horas';
               }
               return null;
@@ -121,7 +130,7 @@ class MedicineForm extends StatelessWidget {
               if (value == null || value.isEmpty) {
                 return 'Por favor introduce la cantidad por dosis';
               }
-              if (int.tryParse(value) == null || int.parse(value) <= 0) {
+              if (int.tryParse(value) == null) {
                 return 'Por favor introduce un número válido';
               }
               return null;

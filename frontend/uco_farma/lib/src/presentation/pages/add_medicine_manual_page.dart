@@ -15,8 +15,8 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
   final _formKey = GlobalKey<FormState>();
   final _cnController = TextEditingController();
   final _quantityController = TextEditingController();
-  final _frequencyController = TextEditingController();
-  final _doseQuantityController = TextEditingController();
+  final _frequencyController = TextEditingController(text: '0');
+  final _doseQuantityController = TextEditingController(text: '0');
 
   bool _isLoading = false;
   String? _error;
@@ -61,7 +61,8 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
         int.parse(_quantityController.text),
         _selectedType,
         int.parse(_frequencyController.text),
-        int.parse(_doseQuantityController.text),
+        double.parse(_doseQuantityController.text),
+        false
       );
 
       if (!mounted) return;

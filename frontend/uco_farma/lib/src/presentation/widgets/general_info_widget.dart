@@ -266,7 +266,8 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
             ),
           ),
           const SizedBox(height: 24),
-          Center(
+          SizedBox(
+            width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -329,49 +330,77 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
             ),
           ),
           const SizedBox(height: 16),
-          Center(
-            child: ElevatedButton.icon(
-              onPressed: () async {
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                final shoplistProvider = Provider.of<ShoplistProvider>(context, listen: false);
-                
-                final userId = authProvider.user?.id;
-                final token = authProvider.token;
+          SizedBox(
+            width: double.infinity,
+            child: Consumer<AuthProvider>(
+              builder: (context, authProvider, _) {
+                final isInShoplist = authProvider.user?.medicines
+                    ?.any((med) => med.cn == widget.cn && med.wished) ?? false;
 
-                if (userId == null || token == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Error: Usuario no autenticado')),
-                  );
-                  return;
-                }
+                return ElevatedButton.icon(
+                  onPressed: () async {
+                    final shoplistProvider = Provider.of<ShoplistProvider>(context, listen: false);
+                    final userId = authProvider.user?.id;
+                    final token = authProvider.token;
 
-                final success = await shoplistProvider.addToShoplist(userId, widget.cn, token);
+                    if (userId == null || token == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Error: Usuario no autenticado')),
+                      );
+                      return;
+                    }
 
-                if (!context.mounted) return;
+                    final success = isInShoplist
+                        ? await shoplistProvider.deleteFromShoplist(userId, widget.cn, token)
+                        : await shoplistProvider.addToShoplist(userId, widget.cn, token);
 
-                if (success) {
-                  await authProvider.refreshUserData();
-                  if (!context.mounted) return;
-                  
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Medicamento añadido a Shoplist')),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(shoplistProvider.error ?? 'Error al añadir a Shoplist')),
-                  );
-                }
+                    if (!context.mounted) return;
+
+                    if (success) {
+                      await authProvider.refreshUserData();
+                      if (!context.mounted) return;
+                      
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            isInShoplist
+                                ? 'Medicamento eliminado de la lista de compras'
+                                : 'Medicamento añadido a la lista de compras',
+                          ),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(shoplistProvider.error ?? 'Error en la operación')),
+                      );
+                    }
+                  },
+                  icon: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: Icon(
+                      isInShoplist ? Icons.remove_shopping_cart : Icons.add_shopping_cart,
+                      key: ValueKey<bool>(isInShoplist),
+                    ),
+                  ),
+                  label: Text(
+                    isInShoplist ? 'Quitar de la lista de compras' : 'Añadir a la lista de compras',
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isInShoplist
+                        ? theme.colorScheme.errorContainer
+                        : theme.colorScheme.primaryContainer,
+                    foregroundColor: isInShoplist
+                        ? theme.colorScheme.onErrorContainer
+                        : theme.colorScheme.onPrimaryContainer,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                );
               },
-              icon: const Icon(Icons.shopping_cart_outlined),
-              label: const Text('Añadir a Shoplist'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.primaryContainer,
-                foregroundColor: theme.colorScheme.onPrimaryContainer,
-              ),
             ),
           ),
         ],

@@ -36,63 +36,69 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildInventoryPage() {
-    final authProvider = context.watch<AuthProvider>();
-    return authProvider.user?.medicines == null ||
-            authProvider.user!.medicines!.isEmpty
-        ? const Center(
-            child: Text(
-              'No hay medicamentos registrados',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          )
-        : ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: authProvider.user!.medicines!.length,
-            itemBuilder: (context, index) {
-              final medicine = authProvider.user!.medicines![index];
-              return MedicinesCard(
-                medicine: medicine,
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MedicineInfoPage(cn: medicine.cn)));
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, _) {
+        return authProvider.user?.medicines == null ||
+                authProvider.user!.medicines!.isEmpty
+            ? const Center(
+                child: Text(
+                  'No hay medicamentos registrados',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: authProvider.user!.medicines!.length,
+                itemBuilder: (context, index) {
+                  final medicine = authProvider.user!.medicines![index];
+                  return MedicinesCard(
+                    medicine: medicine,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MedicineInfoPage(cn: medicine.cn)));
+                    },
+                  );
                 },
               );
-            },
-          );
+      },
+    );
   }
 
   Widget _buildShoplistPage() {
-    final authProvider = context.watch<AuthProvider>();
-    final shoplistMedicines = authProvider.user?.medicines
-        ?.where((medicine) => medicine.wished == true)
-        .toList();
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, _) {
+        final shoplistMedicines = authProvider.user?.medicines
+            ?.where((medicine) => medicine.wished == true)
+            .toList();
 
-    return shoplistMedicines == null || shoplistMedicines.isEmpty
-        ? const Center(
-            child: Text(
-              'No hay medicamentos en la lista de compras',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          )
-        : ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: shoplistMedicines.length,
-            itemBuilder: (context, index) {
-              final medicine = shoplistMedicines[index];
-              return ShoplistCard(
-                medicine: medicine,
-                
+        return shoplistMedicines == null || shoplistMedicines.isEmpty
+            ? const Center(
+                child: Text(
+                  'No hay medicamentos en la lista de compras',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: shoplistMedicines.length,
+                itemBuilder: (context, index) {
+                  final medicine = shoplistMedicines[index];
+                  return ShoplistCard(
+                    medicine: medicine,
+                  );
+                },
               );
-            },
-          );
+      },
+    );
   }
 
   @override
@@ -115,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                 IconButton(
                   icon: const Icon(Icons.logout),
                   onPressed: () {
-                    final authProvider = context.watch<AuthProvider>();
+                    final authProvider = Provider.of<AuthProvider>(context, listen: false);
                     authProvider.logout();
                     Navigator.pushReplacement(
                       context,

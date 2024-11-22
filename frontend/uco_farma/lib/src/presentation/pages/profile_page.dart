@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'login_page.dart';
-import 'home_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -110,7 +109,7 @@ class ProfilePage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: Theme(
+      /*bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
           navigationBarTheme: NavigationBarThemeData(
             labelTextStyle: MaterialStateProperty.all(
@@ -163,7 +162,7 @@ class ProfilePage extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      ),*/
     );
   }
 

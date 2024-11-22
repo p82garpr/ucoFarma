@@ -42,8 +42,9 @@ class MedicineInfoPage extends StatelessWidget {
                   icon: Icon(Icons.description_outlined, size: 17),
                   text: 'Documentos'),
             ],
-            unselectedLabelColor: theme.colorScheme.onSecondary,
             labelColor: theme.colorScheme.onPrimary,
+            unselectedLabelColor: theme.colorScheme.onPrimary.withOpacity(0.7),
+            indicatorColor: theme.colorScheme.onPrimary,
           ),
         ),
         body: TabBarView(

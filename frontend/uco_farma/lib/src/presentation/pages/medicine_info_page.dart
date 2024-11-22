@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uco_farma/src/presentation/widgets/composition_info_widget.dart';
 import 'package:uco_farma/src/presentation/widgets/documents_widget.dart';
 import 'package:uco_farma/src/presentation/widgets/doses_widget.dart';
 import '../widgets/general_info_widget.dart';
@@ -50,7 +51,7 @@ class MedicineInfoPage extends StatelessWidget {
         body: TabBarView(
           children: [
             GeneralInfoWidget(cn: cn),
-            const Center(child: Text('Composición')),
+            CompositionInfoWidget(cn: cn),
             DosesWidget(cn: cn),
             DocumentsWidget(cn: cn),
           ],

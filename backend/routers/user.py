@@ -7,6 +7,7 @@ from database import db
 from auth.jwt_handler import verify_token
 from models.user import User
 from routers.auth import oauth2_scheme
+import bcrypt
 
 router = APIRouter()
 
@@ -27,7 +28,9 @@ async def create_user(user: UserCreate):
     if await db["users"].find_one({"email": user.email}):
         raise HTTPException(status_code=400, detail="El email ya está registrado")
     
-    # Hashea la contraseña antes de almacenarla (ej: bcrypt.hash)
+    # Hashea la contraseña antes de almacenarla
+    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
+    user.password = hashed_password.decode('utf-8')
     new_user = await db["users"].insert_one(user.dict())
     
     # Devuelve el usuario creado utilizando el ID de inserción en la base de datos

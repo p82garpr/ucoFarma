@@ -12,13 +12,13 @@ class MedicineProvider extends ChangeNotifier {
   String? get error => _error;
   CimaMedicine? get cimaMedicine => _cimaMedicine;
 
-  Future<bool> addMedicine(String userId, String cn, String token, int quantity, String type, int frequency, int doseQuantity) async {
+  Future<bool> addMedicine(String userId, String cn, String token, int quantity, String type, int frequency, double doseQuantity, bool wished) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      final result = await _medicineService.addMedicine(userId, cn, token, quantity, type, frequency, doseQuantity);
+      final result = await _medicineService.addMedicine(userId, cn, token, quantity, type, frequency, doseQuantity, wished);
       
       if (result['success']) {
         _error = null;

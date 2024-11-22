@@ -97,6 +97,7 @@ class AuthProvider extends ChangeNotifier {
       final userDataResult = await _authService.getUserData(_token!);
 
       if (userDataResult['success']) {
+        //formato utf8
         _user = User.fromJson(userDataResult['data']);
         notifyListeners();
         return true;

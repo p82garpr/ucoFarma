@@ -16,7 +16,9 @@ class MedicineService {
       int quantity,
       String type,
       int frequency,
-      int doseQuantity) async {
+      double doseQuantity,
+      bool wished,
+      ) async {
     try {
       final cimaResponse =
           await http.get(Uri.parse('$_cimaApiUrl/medicamento?cn=$cn'));
@@ -29,8 +31,8 @@ class MedicineService {
           name: cimaData['nombre'] ?? '',
           quantity: quantity,
           type: type,
-          frequency: frequency.toString(),
-          dose: doseQuantity.toString(),
+          doses: [Dose(frequency: frequency, quantity: doseQuantity)],
+          wished: false,
         );
 
         final response = await http.post(

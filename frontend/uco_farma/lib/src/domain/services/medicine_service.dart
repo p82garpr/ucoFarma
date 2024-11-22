@@ -16,7 +16,9 @@ class MedicineService {
       int quantity,
       String type,
       int frequency,
-      int doseQuantity) async {
+      double doseQuantity,
+      bool wished,
+      ) async {
     try {
       final cimaResponse =
           await http.get(Uri.parse('$_cimaApiUrl/medicamento?cn=$cn'));
@@ -29,8 +31,8 @@ class MedicineService {
           name: cimaData['nombre'] ?? '',
           quantity: quantity,
           type: type,
-          frequency: frequency.toString(),
-          dose: doseQuantity.toString(),
+          doses: [Dose(frequency: frequency, quantity: doseQuantity)],
+          wished: false,
         );
 
         final response = await http.post(
@@ -112,6 +114,35 @@ class MedicineService {
       };
     }
   }
+
+  Future<Map<String, dynamic>> deleteMedicine(String userId, String cn, String token) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$_baseUrl/medicines/$userId/delete-medicine/$cn'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'data': json.decode(response.body),
+        };
+      } else {
+        return {
+          'success': false,
+          'message': 'Error al eliminar el medicamento',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': e.toString(),
+      };
+    }
+  }
+
 }
 
 

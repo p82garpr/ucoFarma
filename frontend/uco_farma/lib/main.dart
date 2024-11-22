@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'src/presentation/providers/auth_provider.dart';
 import 'src/presentation/providers/medicine_provider.dart';
 //import 'src/presentation/pages/login_page.dart';
+import 'src/presentation/providers/shoplist_provider.dart';
 import 'src/app.dart';
 
 void main() {
@@ -11,6 +12,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => MedicineProvider()),
+        ChangeNotifierProvider(create: (_) => ShoplistProvider()),
       ],
       child: const MyApp(),
     ),

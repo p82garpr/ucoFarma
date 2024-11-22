@@ -15,8 +15,8 @@ class AddMedicineQRPage extends StatefulWidget {
 class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
   final _formKey = GlobalKey<FormState>();
   final _quantityController = TextEditingController();
-  final _frequencyController = TextEditingController();
-  final _doseQuantityController = TextEditingController();
+  final _frequencyController = TextEditingController(text: '0');
+  final _doseQuantityController = TextEditingController(text: '0');
 
   bool _isLoading = false;
   String? _error;
@@ -62,7 +62,8 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
         int.parse(_quantityController.text),
         _selectedType,
         int.parse(_frequencyController.text),
-        int.parse(_doseQuantityController.text),
+        double.parse(_doseQuantityController.text),
+        false,
       );
 
       if (!mounted) return;
@@ -86,7 +87,7 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
       if (mounted) setState(() => _isLoading = false);
     }
   }
-  //TODO: añadir control de error de q solo acepte codigos de 6 digitos
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

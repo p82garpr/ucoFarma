@@ -12,13 +12,13 @@ class MedicineProvider extends ChangeNotifier {
   String? get error => _error;
   CimaMedicine? get cimaMedicine => _cimaMedicine;
 
-  Future<bool> addMedicine(String userId, String cn, String token, int quantity, String type, int frequency, int doseQuantity) async {
+  Future<bool> addMedicine(String userId, String cn, String token, int quantity, String type, int frequency, double doseQuantity, bool wished) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      final result = await _medicineService.addMedicine(userId, cn, token, quantity, type, frequency, doseQuantity);
+      final result = await _medicineService.addMedicine(userId, cn, token, quantity, type, frequency, doseQuantity, wished);
       
       if (result['success']) {
         _error = null;
@@ -52,6 +52,33 @@ class MedicineProvider extends ChangeNotifier {
       
       if (result['success']) {
         _cimaMedicine = CimaMedicine.fromJson(result['data']);
+        _error = null;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        _error = result['message'];
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> deleteMedicine(String userId, String cn, String token) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final result = await _medicineService.deleteMedicine(userId, cn, token);
+      
+      if (result['success']) {
         _error = null;
         _isLoading = false;
         notifyListeners();

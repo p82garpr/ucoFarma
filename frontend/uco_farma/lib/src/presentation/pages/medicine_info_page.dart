@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uco_farma/src/presentation/widgets/documents_widget.dart';
+import 'package:uco_farma/src/presentation/widgets/doses_widget.dart';
 import '../widgets/general_info_widget.dart';
 
 class MedicineInfoPage extends StatelessWidget {
@@ -41,15 +42,16 @@ class MedicineInfoPage extends StatelessWidget {
                   icon: Icon(Icons.description_outlined, size: 17),
                   text: 'Documentos'),
             ],
-            unselectedLabelColor: theme.colorScheme.onSecondary,
             labelColor: theme.colorScheme.onPrimary,
+            unselectedLabelColor: theme.colorScheme.onPrimary.withOpacity(0.7),
+            indicatorColor: theme.colorScheme.onPrimary,
           ),
         ),
         body: TabBarView(
           children: [
             GeneralInfoWidget(cn: cn),
             const Center(child: Text('Composición')),
-            const Center(child: Text('Dosis')),
+            DosesWidget(cn: cn),
             DocumentsWidget(cn: cn),
           ],
         ),

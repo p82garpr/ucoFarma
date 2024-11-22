@@ -114,6 +114,35 @@ class MedicineService {
       };
     }
   }
+
+  Future<Map<String, dynamic>> deleteMedicine(String userId, String cn, String token) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$_baseUrl/medicines/$userId/delete-medicine/$cn'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'data': json.decode(response.body),
+        };
+      } else {
+        return {
+          'success': false,
+          'message': 'Error al eliminar el medicamento',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': e.toString(),
+      };
+    }
+  }
+
 }
 
 

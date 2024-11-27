@@ -6,6 +6,7 @@ from models.user import Dose
 from database import db
 from auth.jwt_handler import verify_token
 from routers.auth import oauth2_scheme
+from schemas.user import UserOut
 
 router = APIRouter(
     tags=["doses"]
@@ -46,6 +47,53 @@ async def get_medicine_doses(
     
     # Devolver la lista de dosis, o una lista vacía si no hay dosis registradas
     return medicine.get("doses", [])
+
+@router.put("/{user_id}/take-medicine", response_model=UserOut)
+async def take_medicine(user_id: str, cn: str, quantity: int, token: str = Depends(oauth2_scheme)):
+    """
+    Registrar el consumo de una cantidad específica de un medicamento.
+
+    - **user_id**: ID del usuario.
+    - **cn**: Código Nacional (CN) del medicamento.
+    - **quantity**: Cantidad del medicamento que se consumirá.
+    - **token**: Token de autenticación JWT.
+    
+    Disminuye la cantidad disponible del medicamento en el inventario del usuario.
+    
+    Devuelve el usuario con el inventario de medicamentos actualizado.
+    
+    Control de errores:
+    - Lanza un error 401 si el token es inválido.
+    - Lanza un error 402 si el usuario no se encuentra en la base de datos.
+    - Lanza un error 403 si la cantidad disponible es insuficiente.
+    - Lanza un error 404 si el medicamento no se encuentra en el inventario del usuario.
+    """
+    payload = verify_token(token)
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Token inválido")
+    
+    user = await db["users"].find_one({"_id": ObjectId(user_id)})
+    if not user:
+        raise HTTPException(status_code=402, detail="Usuario no encontrado")
+    
+    medicine_found = False
+    for med in user["medicines"]:
+        if med["cn"] == cn:
+            if med["quantity"] < quantity:
+                raise HTTPException(
+                    status_code=403, 
+                    detail=f"Cantidad insuficiente. Solo quedan {med['quantity']} unidades"
+                )
+            med["quantity"] -= quantity
+            medicine_found = True
+            break
+    
+    if not medicine_found:
+        raise HTTPException(status_code=404, detail="Medicina no encontrada")
+        
+    await db["users"].update_one({"_id": ObjectId(user_id)}, {"$set": user})
+    return user
+
 
 
 @router.put("/{user_id}/{medicine_cn}", response_model=Dose)

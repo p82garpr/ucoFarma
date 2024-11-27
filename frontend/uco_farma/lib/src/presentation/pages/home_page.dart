@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:uco_farma/src/presentation/pages/add_medicine_nfc_page.dart';
 import '../providers/auth_provider.dart';
 import 'login_page.dart';
@@ -27,8 +28,10 @@ class _HomePageState extends State<HomePage> {
       case 1:
         return _buildShoplistPage();
       case 2:
-        return const Center(child: Text('ChatBot'));
+        return _buildCalendarPage();
       case 3:
+        return const Center(child: Text('Chatbot'));
+      case 4:
         return const ProfilePage();
       default:
         return _buildInventoryPage();
@@ -101,11 +104,55 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildCalendarPage() {
+  return Consumer<AuthProvider>(
+    builder: (context, authProvider, _) {
+      final theme = Theme.of(context); // Obtén el tema actual
+      return TableCalendar(
+        focusedDay: DateTime.now(),
+        firstDay: DateTime.utc(2024, 9, 15),
+        lastDay: DateTime.utc(2050, 12, 31),
+        startingDayOfWeek: StartingDayOfWeek.monday, // Configura lunes como primer día
+        calendarStyle: CalendarStyle(
+          todayTextStyle: TextStyle(color: theme.colorScheme.onPrimary), // Usa el estilo del tema
+          todayDecoration: BoxDecoration(
+            color: theme.colorScheme.primary, // Día actual con color secundario
+            shape: BoxShape.circle,
+          ),
+          selectedDecoration: BoxDecoration(
+            color: theme.colorScheme.primary, // Día seleccionado con color primario
+            shape: BoxShape.circle,
+          ),
+          weekendTextStyle: TextStyle(
+            color: theme.colorScheme.error// Fines de semana con el color de error
+          ),
+          defaultTextStyle: TextStyle(color: theme.colorScheme.primary), // Texto predeterminado
+          outsideDaysVisible: false, // Oculta los días fuera del mes
+        ),
+        daysOfWeekStyle: DaysOfWeekStyle(
+          weekdayStyle: theme.textTheme.bodySmall!, // Usa estilo de texto del tema
+          weekendStyle: theme.textTheme.bodySmall!.copyWith(
+            color: theme.colorScheme.secondary, // Fines de semana en secundario
+          ),
+        ),
+        headerStyle: HeaderStyle(
+          formatButtonVisible: false, // Sin botón para cambiar formato
+          titleCentered: true, // Centra el título
+          titleTextStyle: theme.textTheme.titleLarge!, // Usa estilo del tema
+          leftChevronIcon: Icon(Icons.chevron_left, color: theme.colorScheme.primary),
+          rightChevronIcon: Icon(Icons.chevron_right, color: theme.colorScheme.primary),
+        ),
+      );
+    },
+  );
+}
+
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: _selectedIndex == 3
+      appBar: _selectedIndex == 4
           ? null
           : AppBar(
               backgroundColor: theme.colorScheme.primary,
@@ -212,7 +259,12 @@ class _HomePageState extends State<HomePage> {
           NavigationDestination(
             icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
             selectedIcon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
-            label: 'Lista Compra',
+            label: 'Lista',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.calendar_month, color: theme.colorScheme.onPrimary),
+            selectedIcon: Icon(Icons.calendar_month, color: theme.colorScheme.onPrimary),
+            label: 'Calendario',
           ),
           NavigationDestination(
             icon: Icon(Icons.chat, color: theme.colorScheme.onPrimary),

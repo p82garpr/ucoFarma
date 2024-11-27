@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/chat_provider.dart';
+import '../providers/auth_provider.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -12,6 +13,35 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final _textController = TextEditingController();
   final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeChatbot();
+    });
+  }
+
+  void _initializeChatbot() {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+    
+    if (authProvider.user?.medicines != null) {
+      chatProvider.setUserMedicines(authProvider.user!.medicines);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final authProvider = Provider.of<AuthProvider>(context);
+    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+    
+    // Actualizar los medicamentos cuando cambien
+    if (authProvider.user?.medicines != null) {
+      chatProvider.setUserMedicines(authProvider.user!.medicines);
+    }
+  }
 
   @override
   void dispose() {
@@ -110,7 +140,7 @@ class _ChatPageState extends State<ChatPage> {
                       : () {
                           if (_textController.text.trim().isEmpty) return;
                           
-                          chatProvider.sendMessages(_textController.text);
+                          chatProvider.sendMessage(_textController.text);
                           _textController.clear();
                           
                           Future.delayed(

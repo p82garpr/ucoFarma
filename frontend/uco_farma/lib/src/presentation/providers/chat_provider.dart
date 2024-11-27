@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import '../../domain/models/message_model.dart';
 import '../../domain/services/chat_service.dart';
+import '../../domain/models/medicine_model.dart';
 
 class ChatProvider extends ChangeNotifier {
   final ChatService _chatService = ChatService();
   final List<Message> _messages = [];
   bool _isLoading = false;
   String? _error;
+  List<Medicine>? _userMedicines;
 
   List<Message> get messages => _messages;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  
-  
-  Future<void> sendMessages(String text) async {
+  void setUserMedicines(List<Medicine>? medicines) {
+    _userMedicines = medicines;
+  }
+
+  Future<void> sendMessage(String text) async {
     if (text.trim().isEmpty) return;
 
-    // Agregar mensaje del usuario
     _messages.add(Message(
       text: text,
       isUserMessage: true,
@@ -30,7 +33,7 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await _chatService.sendMessagess(text);
+      final response = await _chatService.sendMessage(text, _userMedicines);
       
       _messages.add(Message(
         text: response,

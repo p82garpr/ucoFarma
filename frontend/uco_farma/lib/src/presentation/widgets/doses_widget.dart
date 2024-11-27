@@ -27,7 +27,7 @@ class DosesWidget extends StatelessWidget {
     }
 
     final dose = medicine.doses?.firstOrNull;
-    print(dose);
+
 
     return SingleChildScrollView(
       child: SafeArea(
@@ -117,12 +117,8 @@ class DosesWidget extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        doseProvider.takeDose(
-                          authProvider.user?.id ?? '', 
-                          cn, 
-                          (dose?.quantity ?? 0).toInt(), 
-                          authProvider.token ?? ''
-                        );
+                        
+                       
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -137,6 +133,12 @@ class DosesWidget extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       // TODO: Implementar edición de dosis
+                      doseProvider.takeDose(
+                          authProvider.user?.id ?? '', 
+                          cn, 
+                          (dose?.quantity ?? 0).toInt(), 
+                          authProvider.token ?? ''
+                        );
                     },
                     style: IconButton.styleFrom(
                       backgroundColor: theme.colorScheme.primaryContainer,

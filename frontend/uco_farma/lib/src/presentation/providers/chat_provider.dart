@@ -12,7 +12,9 @@ class ChatProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  Future<void> sendMessage(String text) async {
+  
+  
+  Future<void> sendMessages(String text) async {
     if (text.trim().isEmpty) return;
 
     // Agregar mensaje del usuario
@@ -28,7 +30,7 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await _chatService.sendMessage(text);
+      final response = await _chatService.sendMessagess(text);
       
       _messages.add(Message(
         text: response,

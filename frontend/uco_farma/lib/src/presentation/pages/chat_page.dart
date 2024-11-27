@@ -110,7 +110,7 @@ class _ChatPageState extends State<ChatPage> {
                       : () {
                           if (_textController.text.trim().isEmpty) return;
                           
-                          chatProvider.sendMessage(_textController.text);
+                          chatProvider.sendMessages(_textController.text);
                           _textController.clear();
                           
                           Future.delayed(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uco_farma/src/presentation/providers/auth_provider.dart';
+import 'package:uco_farma/src/presentation/providers/dose_provider.dart';
 
 class DosesWidget extends StatelessWidget {
   final String cn;
@@ -14,6 +15,7 @@ class DosesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final authProvider = context.watch<AuthProvider>();
+    final doseProvider = context.read<DoseProvider>();
     
     final medicine = authProvider.user?.medicines?.firstWhere(
       (med) => med.cn == cn,
@@ -115,7 +117,12 @@ class DosesWidget extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // TODO: Implementar toma de dosis
+                        doseProvider.takeDose(
+                          authProvider.user?.id ?? '', 
+                          cn, 
+                          (dose?.quantity ?? 0).toInt(), 
+                          authProvider.token ?? ''
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),

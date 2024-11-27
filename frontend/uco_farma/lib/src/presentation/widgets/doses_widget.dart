@@ -25,7 +25,7 @@ class DosesWidget extends StatelessWidget {
     }
 
     final dose = medicine.doses?.firstOrNull;
-    print(dose);
+
 
     return SingleChildScrollView(
       child: SafeArea(
@@ -116,6 +116,7 @@ class DosesWidget extends StatelessWidget {
                     child: ElevatedButton.icon(
                       onPressed: () {
                         // TODO: Implementar toma de dosis
+
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),

@@ -10,7 +10,7 @@ class MedicineType(str, Enum):
 
 class Dose(BaseModel):
     frequency: int
-    quantity: float
+    quantity: int
 
 class Medicine(BaseModel):
     cn: str

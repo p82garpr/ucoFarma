@@ -17,7 +17,7 @@ class Medicine {
   });
 
   factory Medicine.fromJson(Map<String, dynamic> json) {
-    print('Parsing medicine doses: ${json['doses']}'); // Debug
+    //print('Parsing medicine doses: ${json['doses']}'); // Debug
     return Medicine(
       cn: json['cn'] ?? '',
       name: json['name'] ?? '',
@@ -43,7 +43,7 @@ class Medicine {
 
 class Dose {
   final int frequency;
-  final double quantity;
+  final int quantity;
 
   Dose({
     required this.frequency,
@@ -51,12 +51,12 @@ class Dose {
   });
 
   factory Dose.fromJson(Map<String, dynamic> json) {
-    print('Parsing dose: $json'); // Debug
+    //print('Parsing dose: $json'); // Debug
     return Dose(
       frequency: json['frequency'] is int 
           ? json['frequency'] 
           : int.tryParse(json['frequency'].toString()) ?? 0,
-      quantity: json['quantity'] is double 
+      quantity: json['quantity'] is int 
           ? json['quantity'] 
           : int.tryParse(json['quantity'].toString()) ?? 0,
     );

@@ -50,7 +50,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Colors.red, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         labelStyle: const TextStyle(fontSize: 16),
       ),
       // Personalización de los íconos
@@ -76,6 +77,10 @@ class AppTheme {
         ),
         bodyMedium: TextStyle(
           fontSize: 14,
+          color: Colors.black87,
+        ),
+        bodySmall: TextStyle(
+          fontSize: 12,
           color: Colors.black87,
         ),
         labelLarge: TextStyle(

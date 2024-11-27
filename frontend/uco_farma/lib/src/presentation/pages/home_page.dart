@@ -8,6 +8,7 @@ import '../widgets/shoplist_card.dart';
 import 'add_medicine_manual_page.dart';
 import 'add_medicine_qr_page.dart';
 import 'medicine_info_page.dart';
+import 'chat_page.dart';
 import 'profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> {
       case 1:
         return _buildShoplistPage();
       case 2:
-        return const Center(child: Text('ChatBot'));
+        return const ChatPage();
       case 3:
         return const ProfilePage();
       default:

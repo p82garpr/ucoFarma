@@ -5,6 +5,7 @@ import 'src/presentation/providers/medicine_provider.dart';
 //import 'src/presentation/pages/login_page.dart';
 import 'src/presentation/providers/shoplist_provider.dart';
 import 'src/presentation/providers/dose_provider.dart';
+import 'src/presentation/providers/chat_provider.dart';
 import 'src/app.dart';
 
 void main() {
@@ -15,6 +16,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => MedicineProvider()),
         ChangeNotifierProvider(create: (_) => ShoplistProvider()),
         ChangeNotifierProvider(create: (_) => DoseProvider()),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
       ],
       child: const MyApp(),
     ),

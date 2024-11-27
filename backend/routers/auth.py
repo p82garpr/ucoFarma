@@ -6,6 +6,7 @@ from schemas.user import Token
 from auth.jwt_handler import create_access_token, verify_token
 from database import db
 from pydantic import BaseModel
+import bcrypt
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
@@ -35,9 +36,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     """
     # Buscar usuario en la base de datos usando el correo electrónico
     user = await db["users"].find_one({"email": form_data.username})
-    
     # Verificar si el usuario existe y que la contraseña coincida (se recomienda hashear la contraseña)
-    if user and user["password"] == form_data.password:  # Deberías hashear y verificar aquí
+    if user and bcrypt.checkpw(form_data.password.encode('utf-8'), user["password"].encode('utf-8')):  
         # Generar token de acceso JWT con el email del usuario como sujeto
         access_token = create_access_token(data={"sub": user["email"]})
         
@@ -57,9 +57,11 @@ async def change_password(
     if payload is None:
         raise HTTPException(status_code=401, detail="Token inválido")
     
+    hashed_new_password = bcrypt.hashpw(password_data.new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    
     result = await db["users"].update_one(
         {"email": payload["sub"]},
-        {"$set": {"password": password_data.new_password}}
+        {"$set": {"password": hashed_new_password}}
     )
     
     if result.modified_count == 0:

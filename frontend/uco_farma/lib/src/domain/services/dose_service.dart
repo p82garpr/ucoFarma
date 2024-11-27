@@ -36,13 +36,13 @@ class DoseService {
     }
   }
 
-  Future<Map<String,dynamic>> updateDose(String userId, String cn, int frecuency, int quantity, String token) async {
+  Future<Map<String,dynamic>> updateDose(String userId, String cn, int frequency, int quantity, String token) async {
     try {
-      final queryParameters = {'cn': cn, 'quantity': quantity.toString()};
+      final queryParameters = {'frequency': frequency.toString(), 'quantity': quantity.toString()};
       final response = await http.put(
         Uri.parse('$_baseUrl/doses/$userId/$cn').replace(queryParameters: queryParameters),
         headers: {
-          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
         },
       );
       if (response.statusCode == 200) {

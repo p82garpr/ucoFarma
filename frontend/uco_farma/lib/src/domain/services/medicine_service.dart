@@ -31,7 +31,7 @@ class MedicineService {
           name: cimaData['nombre'] ?? '',
           quantity: quantity,
           type: type,
-          doses: [Dose(frequency: frequency, quantity: doseQuantity)],
+          doses: [Dose(frequency: frequency, quantity: doseQuantity.toInt())],
           wished: false,
         );
 

@@ -53,22 +53,42 @@ class MedicinesCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      medicine.name,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            medicine.name,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      'Cantidad: ${medicine.quantity} dosis',
-                      style: theme.textTheme.bodyMedium,
+                    Row(
+                      children: [
+                        _PulsingText(
+                          text: 'Cantidad: ${medicine.quantity} dosis',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: medicine.quantity <= 5 
+                              ? theme.colorScheme.error 
+                              : null,
+                            fontWeight: medicine.quantity <= 5 
+                              ? FontWeight.bold 
+                              : null,
+                          ),
+                          shouldPulse: medicine.quantity <= 5,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'CN: ${medicine.cn}',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.secondary,
+                        color: Colors.grey,
                       ),
                     ),
                   ],
@@ -83,6 +103,60 @@ class MedicinesCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _PulsingText extends StatefulWidget {
+  final String text;
+  final TextStyle? style;
+  final bool shouldPulse;
+
+  const _PulsingText({
+    required this.text,
+    this.style,
+    this.shouldPulse = false,
+  });
+
+  @override
+  State<_PulsingText> createState() => _PulsingTextState();
+}
+
+class _PulsingTextState extends State<_PulsingText> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+    
+    _animation = Tween<double>(begin: 1.0, end: 1.05).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!widget.shouldPulse) {
+      return Text(widget.text, style: widget.style);
+    }
+    
+    return ScaleTransition(
+      scale: _animation,
+      child: Text(
+        widget.text,
+        style: widget.style,
       ),
     );
   }

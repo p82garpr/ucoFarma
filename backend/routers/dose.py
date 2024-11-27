@@ -53,7 +53,7 @@ async def update_dose(
     user_id: str,
     medicine_cn: str,
     frequency: int,
-    quantity: float,
+    quantity: int,
     token: str = Depends(oauth2_scheme)
 ):
     """

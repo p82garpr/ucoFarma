@@ -116,9 +116,32 @@ class DosesWidget extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {
+                      onPressed: () async {
+                        final success = await doseProvider.takeDose(
+                          authProvider.user?.id ?? '', 
+                          cn, 
+                          (dose?.quantity ?? 0).toInt(), 
+                          authProvider.token ?? ''
+                        );
                         
-                       
+                        if (success) {
+                          authProvider.refreshUserData();
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text('Dosis tomada correctamente'),
+                              backgroundColor: theme.colorScheme.secondary,
+                            ),
+                          );
+                        } else {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(doseProvider.error ?? 'Error al tomar la dosis'),
+                              backgroundColor: theme.colorScheme.error,
+                            ),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -132,13 +155,79 @@ class DosesWidget extends StatelessWidget {
                   const SizedBox(width: 12),
                   IconButton(
                     onPressed: () {
-                      // TODO: Implementar edición de dosis
-                      doseProvider.takeDose(
-                          authProvider.user?.id ?? '', 
-                          cn, 
-                          (dose?.quantity ?? 0).toInt(), 
-                          authProvider.token ?? ''
-                        );
+                      final quantityController = TextEditingController(
+                        text: (dose?.quantity ?? 0).toString()
+                      );
+                      final frequencyController = TextEditingController(
+                        text: (dose?.frequency ?? 0).toString()
+                      );
+
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Editar dosis'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextField(
+                                controller: quantityController,
+                                decoration: InputDecoration(
+                                  labelText: 'Cantidad (${_getUnits(medicine.type)})',
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                              const SizedBox(height: 16),
+                              TextField(
+                                controller: frequencyController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Frecuencia (horas)',
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Cancelar'),
+                            ),
+                            FilledButton(
+                              onPressed: () async {
+                                final success = await doseProvider.updateDose(
+                                  authProvider.user?.id ?? '',
+                                  cn,
+                                  int.tryParse(frequencyController.text) ?? 0,
+                                  int.tryParse(quantityController.text) ?? 0,
+                                  authProvider.token ?? ''
+                                );
+
+                                if (!context.mounted) return;
+                                Navigator.pop(context);
+
+                                if (success) {
+                                  authProvider.refreshUserData();
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text('Dosis actualizada correctamente'),
+                                      backgroundColor: theme.colorScheme.secondary,
+                                    ),
+                                  );
+                                } else {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(doseProvider.error ?? 'Error al actualizar la dosis'),
+                                      backgroundColor: theme.colorScheme.error,
+                                    ),
+                                  );
+                                }
+                              },
+                              child: const Text('Guardar'),
+                            ),
+                          ],
+                        ),
+                      );
                     },
                     style: IconButton.styleFrom(
                       backgroundColor: theme.colorScheme.primaryContainer,

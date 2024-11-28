@@ -4,6 +4,7 @@ import '../models/medicine_model.dart';
 
 class ChatService {
   final String _baseUrl = 'http://10.0.2.2:1234/v1/chat/completions'; // URL de LMStudio
+  // ignore: prefer_final_fields
   List<Map<String, String>> _messageHistory = [];
 
   Future<String> sendMessage(String message, List<Medicine>? medicines) async {
@@ -15,12 +16,10 @@ class ChatService {
           String doseInfo = '';
           if (medicine.doses?.isNotEmpty ?? false) {
             final dose = medicine.doses!.first;
-            if (dose != null) {
-              doseInfo = '''
-             Frecuencia: ${dose.frequency} veces al día
-             Cantidad por dosis: ${dose.quantity}''';
-            }
-          }
+            doseInfo = '''
+           Frecuencia: ${dose.frequency} veces al día
+           Cantidad por dosis: ${dose.quantity}''';
+                    }
 
           medicinesContext += '''- ${medicine.name} (CN: ${medicine.cn})
              Cantidad: ${medicine.quantity} dosis
@@ -41,15 +40,17 @@ class ChatService {
             {
               "role": "system",
               "content": """Eres un asistente médico experto en medicamentos. 
-              Tu función es ayudar con información sobre los medicamentos del usuario, los cuales son los siguientes:
+              Tu función es ayudar con información sobre los medicamentos del usuario y ayudarlo con sus sintomas sabiendo que tiene los
+              siguientes medicamentos:
               
               $medicinesContext
               
               Proporciona información precisa y útil sobre los medicamentos listados,
-              sus usos, efectos secundarios y precauciones. No des consejos médicos directos,
-              solo información general y contesta a cualquier pregunta que te haga, si el paciente
+              sus usos, efectos secundarios y precaucione, pero sé breve. Si el paciente
               tiene alguna dolencia o problema, intenta recomendarle algun medicamento de los que tenga,
-              y si no lo tiene, recomienda que compre otro."""
+              y si no lo tiene, recomienda que compre otro, intenta siempre dar consejos medicos, pero a su vez
+              recomienda la asistencia o hablar con un médico especialista.
+              """
             },
             {
               "role": "user",

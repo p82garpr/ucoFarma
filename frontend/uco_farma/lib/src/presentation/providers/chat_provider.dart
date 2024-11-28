@@ -47,4 +47,18 @@ class ChatProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void addBotMessage(String text) {
+    _messages.add(Message(
+      text: text,
+      isUserMessage: false,
+      timestamp: DateTime.now(),
+    ));
+    notifyListeners();
+  }
+
+  void clearChat() {
+    _messages.clear();
+    notifyListeners();
+  }
 }

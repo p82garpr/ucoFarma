@@ -5,9 +5,10 @@ import 'package:flutter_localizations/flutter_localizations.dart'; // Añadir es
 
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isAuthenticated;
+  
+  const MyApp({super.key, required this.isAuthenticated});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false, // Remove the debug banner
       theme: AppTheme().theme(),
       //home: const LoginPage(),
-      initialRoute: AppRoutes.initial,
+      initialRoute: isAuthenticated ? AppRoutes.home : AppRoutes.initial,
       routes: AppRoutes.routes,
       //Para los idiomas de las localizaciones
       localizationsDelegates: const [

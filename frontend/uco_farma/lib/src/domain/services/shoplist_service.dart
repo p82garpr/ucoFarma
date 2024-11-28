@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ShoplistService {
-  final String _baseUrl = 'http://10.0.2.2:8000';
+  final String _baseUrl = 'https://ucofarma.onrender.com';
 
   Future<Map<String, dynamic>> addToShoplist(String userId, String cn, String token) async {
     try {

@@ -8,17 +8,22 @@ import 'src/presentation/providers/dose_provider.dart';
 import 'src/presentation/providers/chat_provider.dart';
 import 'src/app.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  final authProvider = AuthProvider();
+  final isAuthenticated = await authProvider.checkAuthStatus();
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => authProvider),
         ChangeNotifierProvider(create: (_) => MedicineProvider()),
         ChangeNotifierProvider(create: (_) => ShoplistProvider()),
         ChangeNotifierProvider(create: (_) => DoseProvider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
       ],
-      child: const MyApp(),
+      child: MyApp(isAuthenticated: isAuthenticated),
     ),
   );
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../domain/models/user_model.dart';
 import '../../domain/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider extends ChangeNotifier {
   final _authService = AuthService();
-
+  final _prefs = SharedPreferences.getInstance();
   User? _user;
   String? _token;
   bool _isLoading = false;
@@ -34,6 +35,10 @@ class AuthProvider extends ChangeNotifier {
           _error = null;
           _isLoading = false;
           notifyListeners();
+
+          final prefs = await _prefs;
+          await prefs.setString('token', _token!);
+          await prefs.setString('email', email);
           return true;
         } else {
           _error = userDataResult['message'];
@@ -53,6 +58,8 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+
+    
   }
 
   Future<bool> register(
@@ -84,10 +91,44 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  void logout() {
+  Future<void> logout() async {
     _user = null;
     _token = null;
     notifyListeners();
+
+    final prefs = await _prefs;
+    await prefs.remove('token');
+    await prefs.remove('email');
+    
+  }
+
+  Future<bool> checkAuthStatus() async {
+    final prefs = await _prefs;
+    final token = prefs.getString('token');
+    
+    if (token == null) return false;
+
+    try {
+      _token = token;
+      final userDataResult = await _authService.getUserData(token);
+
+      if (userDataResult['success']) {
+        _user = User.fromJson(userDataResult['data']);
+        _error = null;
+        notifyListeners();
+        return true;
+      } else {
+        _token = null;
+        await prefs.remove('token');
+        await prefs.remove('email');
+        return false;
+      }
+    } catch (e) {
+      _token = null;
+      await prefs.remove('token');
+      await prefs.remove('email');
+      return false;
+    }
   }
 
   Future<bool> refreshUserData() async {

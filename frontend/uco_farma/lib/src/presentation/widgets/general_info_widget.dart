@@ -51,25 +51,48 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
           iconColor = isActive ? Colors.green : Colors.grey;
         }
 
-        return InkWell(
-          onTap: () => _showInfoDialog(context, title, description),
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Icon(
-                  icon,
-                  color: iconColor,
-                  size: 32,
+        return Container(
+          width: 85,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Contenedor para el icono principal y el icono de información
+              SizedBox(
+                height: 40,
+                child: Stack(
+                  children: [
+                    // Icono principal centrado
+                    Center(
+                      child: Icon(
+                        icon,
+                        color: iconColor,
+                        size: 32,
+                      ),
+                    ),
+                    // Icono de información
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: InkWell(
+                        onTap: () => _showInfoDialog(context, title, description),
+                        child: Icon(
+                          Icons.info_outline,
+                          size: 14,
+                          color: theme.colorScheme.outline,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  label,
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 4),
+              // Texto debajo
+              Text(
+                label,
+                style: theme.textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         );
       },

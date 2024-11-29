@@ -182,24 +182,23 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: _selectedIndex == 3
-          ? null
-          : AppBar(
-              title: Text(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
                 'UCO Farma',
                 style: theme.textTheme.titleLarge?.copyWith(
                   color: theme.colorScheme.onPrimary,
                 ),
               ),
-              backgroundColor: theme.colorScheme.primary,
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.help_outline),
-                  onPressed: () => _showHelpDialog(context, theme),
-                  color: theme.colorScheme.onPrimary,
-                ),
-              ],
-            ),
+        backgroundColor: theme.colorScheme.primary,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: () => _showHelpDialog(context, theme),
+            color: theme.colorScheme.onPrimary,
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           Positioned.fill(

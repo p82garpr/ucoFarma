@@ -19,6 +19,7 @@ class ProfilePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Mi Perfil',
           style: theme.textTheme.titleLarge?.copyWith(
@@ -26,11 +27,6 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
         backgroundColor: theme.colorScheme.primary,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: theme.colorScheme.onPrimary,
-          onPressed: () => Navigator.pop(context),
-        ),
         actions: [
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {

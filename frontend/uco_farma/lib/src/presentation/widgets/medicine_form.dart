@@ -57,6 +57,33 @@ class MedicineForm extends StatelessWidget {
             ],
             const SizedBox(height: 16),
           ],
+          const SizedBox(height: 16),
+          
+          // Mensaje informativo sobre el tipo de medicamento
+          Card(
+            elevation: 0,
+            color: theme.colorScheme.primaryContainer.withOpacity(0.2),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.lightbulb_outline,
+                    color: theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Selecciona si el medicamento es sólido (pastillas, cápsulas) o líquido (jarabe, gotas) según su presentación.',
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          
           Row(
             children: [
               Expanded(

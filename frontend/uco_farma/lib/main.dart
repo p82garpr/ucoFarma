@@ -7,6 +7,7 @@ import 'src/presentation/providers/shoplist_provider.dart';
 import 'src/presentation/providers/dose_provider.dart';
 import 'src/presentation/providers/chat_provider.dart';
 import 'src/app.dart';
+import 'src/presentation/providers/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +23,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ShoplistProvider()),
         ChangeNotifierProvider(create: (_) => DoseProvider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: MyApp(isAuthenticated: isAuthenticated),
     ),

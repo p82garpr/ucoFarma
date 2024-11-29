@@ -90,6 +90,110 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
     }
   }
 
+  void _showCNInfoDialog(BuildContext context, ThemeData theme) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.medication, color: theme.colorScheme.primary),
+              const SizedBox(width: 8),
+              const Text('Código Nacional'),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '¿Qué es el Código Nacional?',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'El Código Nacional es un número único de 6 dígitos que identifica cada medicamento en España.',
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '¿Dónde encontrarlo?',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Puedes encontrarlo en:\n'
+                  '• El cartonaje del medicamento\n'
+                  '• El código de barras (últimos 6 dígitos)\n'
+                  '• El prospecto del medicamento\n'
+                  '• La factura de la farmacia',
+                ),
+                const SizedBox(height: 16),
+                // Imagen de ejemplo
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: theme.colorScheme.outline.withOpacity(0.5),
+                      ),
+                    ),
+                    child: Image.asset(
+                      'assets/images/cn.png',
+                      fit: BoxFit.contain,
+                      height: 200, // Ajusta esta altura según necesites
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Ejemplo de ubicación del CN en el envase',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.outline,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.tips_and_updates,
+                        color: theme.colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      const Expanded(
+                        child: Text(
+                          'También puedes usar el escáner QR o NFC para añadir medicamentos automáticamente.',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Entendido'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -107,26 +211,28 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextFormField(
-              controller: _cnController,
-              decoration: const InputDecoration(
-                labelText: 'Código Nacional (CN)',
-                helperText: 'Introduce el código nacional del medicamento',
-                prefixIcon: Icon(Icons.medication),
-              ),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor introduce el código nacional';
-                }
-                if (value.length < 6) {
-                  return 'El código nacional debe tener al menos 6 dígitos';
-                }
-                return null;
-              },
+            // Campo de Código Nacional con botón de información
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _cnController,
+                    decoration: const InputDecoration(
+                      labelText: 'Código Nacional',
+                      prefixIcon: Icon(Icons.numbers),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.info_outline),
+                  onPressed: () => _showCNInfoDialog(context, theme),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
+            
             MedicineForm(
               formKey: _formKey,
               quantityController: _quantityController,

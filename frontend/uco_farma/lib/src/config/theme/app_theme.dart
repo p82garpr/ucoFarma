@@ -86,4 +86,31 @@ class AppTheme {
       ),
     );
   }
+
+  ThemeData darkTheme() {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      colorScheme: ColorScheme.dark(
+        primary: Colors.lightGreen[700]!,
+        secondary: Colors.green[500]!,
+        tertiary: Colors.green[300]!,
+        error: Colors.red[700]!,
+        surface: const Color(0xFF1E1E1E),
+      ),
+      scaffoldBackgroundColor: const Color(0xFF121212),
+      cardTheme: const CardTheme(
+        elevation: 4,
+        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: const Color(0xFF2C2C2C),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      // Puedes añadir más personalizaciones del tema oscuro aquí
+    );
+  }
 }

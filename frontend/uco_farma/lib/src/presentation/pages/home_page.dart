@@ -8,6 +8,7 @@ import '../widgets/shoplist_card.dart';
 import 'add_medicine_manual_page.dart';
 import 'add_medicine_qr_page.dart';
 import 'medicine_info_page.dart';
+import 'chat_page.dart';
 import 'profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> {
       case 1:
         return _buildShoplistPage();
       case 2:
-        return const Center(child: Text('ChatBot'));
+        return const ChatPage();
       case 3:
         return const ProfilePage();
       default:
@@ -131,7 +132,21 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-      body: _getPage(),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.5,
+              child: Image.asset(
+                'assets/images/logo-removebg.png',
+                width: 50,
+                height: 50,
+              ),
+            ),
+          ),
+          _getPage(),
+        ],
+      ),
       floatingActionButton: _selectedIndex == 0
           ? FloatingActionButton(
               elevation: 4,
@@ -154,8 +169,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddMedicineManualPage()));
+                                      builder: (context) => const AddMedicineManualPage()));
                             },
                           ),
                           ListTile(
@@ -166,8 +180,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddMedicineNFCPage()));
+                                      builder: (context) => const AddMedicineNFCPage()));
                             },
                           ),
                           ListTile(
@@ -178,8 +191,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddMedicineQRPage()));
+                                      builder: (context) => const AddMedicineQRPage()));
                             },
                           ),
                         ],

@@ -18,6 +18,8 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
   final _frequencyController = TextEditingController(text: '0');
   final _doseQuantityController = TextEditingController(text: '0');
 
+  String? _medicineName;
+
   bool _isLoading = false;
   String? _error;
   String _selectedType = 'solid';
@@ -49,6 +51,21 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
     }
   }
 
+  Future<void> _getMedicineName(String cn) async {
+    final medicineProvider = Provider.of<MedicineProvider>(context, listen: false);
+    
+    try {
+      final result = await medicineProvider.getMedicineCimaInfo(cn);
+      if (result) {
+        setState(() {
+          _medicineName = medicineProvider.cimaMedicine?.nombre;
+        });
+      }
+    } catch (e) {
+      // Manejar el error si es necesario
+    }
+  }
+
   void _startNfcScan() {
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
@@ -71,6 +88,7 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
             _showForm = true;
           });
 
+          await _getMedicineName(payload);
           await NfcManager.instance.stopSession();
         } catch (e) {
           setState(() => _error = e.toString());
@@ -161,6 +179,7 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
                 isLoading: _isLoading,
                 error: _error,
                 scannedCN: _scannedCN,
+                medicineName: _medicineName,
                 onAddMedicine: _addMedicine,
                 onTypeChanged: (value) => setState(() => _selectedType = value),
               ),

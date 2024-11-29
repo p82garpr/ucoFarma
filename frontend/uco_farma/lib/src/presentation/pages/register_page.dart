@@ -56,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
           "${_selectedDate!.year}-${_selectedDate!.month.toString().padLeft(2, '0')}-${_selectedDate!.day.toString().padLeft(2, '0')}";
 
       final success = await authProvider.register(
-        _fullNameController.text.trim(),
+        _fullNameController.text.trim(),  
         _emailController.text.trim(),
         _passwordController.text,
         birthdate,

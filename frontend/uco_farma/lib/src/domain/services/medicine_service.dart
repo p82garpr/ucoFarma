@@ -18,6 +18,8 @@ class MedicineService {
       int frequency,
       double doseQuantity,
       bool wished,
+      String startDate,
+      String endDate
       ) async {
     try {
       final cimaResponse =
@@ -31,7 +33,7 @@ class MedicineService {
           name: cimaData['nombre'] ?? '',
           quantity: quantity,
           type: type,
-          doses: [Dose(frequency: frequency, quantity: doseQuantity.toInt())],
+          doses: [Dose(frequency: frequency, quantity: doseQuantity.toInt(), startDate: startDate, endDate: endDate)],
           wished: false,
         );
 

@@ -198,6 +198,8 @@ class DosesWidget extends StatelessWidget {
                                   cn,
                                   int.tryParse(frequencyController.text) ?? 0,
                                   int.tryParse(quantityController.text) ?? 0,
+                                  dose?.startDate ?? '',
+                                  dose?.endDate ?? '',
                                   authProvider.token ?? ''
                                 );
 

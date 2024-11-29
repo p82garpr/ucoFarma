@@ -17,6 +17,8 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
   final _quantityController = TextEditingController();
   final _frequencyController = TextEditingController(text: '0');
   final _doseQuantityController = TextEditingController(text: '0');
+  final _doseStartDateTimeController = TextEditingController();
+  final _doseEndDateTimeController = TextEditingController();
 
   bool _isLoading = false;
   String? _error;
@@ -28,6 +30,8 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
     _quantityController.dispose();
     _frequencyController.dispose();
     _doseQuantityController.dispose();
+    _doseStartDateTimeController.dispose();
+    _doseEndDateTimeController.dispose();
     super.dispose();
   }
 
@@ -62,7 +66,9 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
         _selectedType,
         int.parse(_frequencyController.text),
         double.parse(_doseQuantityController.text),
-        false
+        false,
+        _doseStartDateTimeController.text.trim(),
+        _doseEndDateTimeController.text.trim(),
       );
 
       if (!mounted) return;
@@ -102,6 +108,10 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
             color: theme.colorScheme.onPrimary,
           ),
         ),
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary),
+        ),
         backgroundColor: theme.colorScheme.primary,
       ),
       body: SingleChildScrollView(
@@ -126,12 +136,14 @@ class _AddMedicineManualPageState extends State<AddMedicineManualPage> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             MedicineForm(
               formKey: _formKey,
               quantityController: _quantityController,
               frequencyController: _frequencyController,
               doseQuantityController: _doseQuantityController,
+              startDateController: _doseStartDateTimeController,
+              endDateController: _doseEndDateTimeController,
               selectedType: _selectedType,
               isLoading: _isLoading,
               error: _error,

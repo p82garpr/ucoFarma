@@ -37,7 +37,7 @@ class DoseProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> updateDose(String userId, String cn, int frequency, int quantity, String token) async {
+  Future<bool> updateDose(String userId, String cn, int frequency, int quantity, String startDate, String endDate, String token) async {
     _isLoading = true;
     _error = null;
     notifyListeners();

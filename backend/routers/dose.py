@@ -54,6 +54,8 @@ async def update_dose(
     medicine_cn: str,
     frequency: int,
     quantity: int,
+    startDate: str,
+    endDate: str,
     token: str = Depends(oauth2_scheme)
 ):
     """
@@ -63,6 +65,8 @@ async def update_dose(
     - **medicine_cn**: Código Nacional (CN) del medicamento.
     - **frequency**: Frecuencia de la dosis (en horas).
     - **quantity**: Cantidad de la dosis.
+    - **startDate**: Fecha de inicio de la dosis.
+    - **endDate**: Fecha de fin de la dosis.
     - **token**: Token de autenticación JWT.
     
     Devuelve la dosis actualizada para el medicamento específico del usuario.
@@ -91,7 +95,7 @@ async def update_dose(
         raise HTTPException(status_code=404, detail="No existe una dosis para este medicamento")
     
     # Crear la dosis actualizada
-    updated_dose = Dose(frequency=frequency, quantity=quantity)
+    updated_dose = Dose(frequency=frequency, quantity=quantity, startDate=startDate, endDate=endDate)
     
     # Actualizar la dosis (siempre será la primera, ya que solo se permite una dosis)
     medicine["doses"] = [updated_dose.dict()]

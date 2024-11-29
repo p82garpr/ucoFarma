@@ -20,8 +20,32 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showDisclaimerDialog();
       _initializeChatbot();
     });
+  }
+
+  void _showDisclaimerDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Aviso Importante'),
+        content: const Text(
+          'Este chatbot es una herramienta de asistencia general y no sustituye '
+          'el consejo médico profesional. No está diseñado para diagnosticar '
+          'enfermedades ni recetar medicamentos.\n\n'
+          'Para cualquier problema de salud, consulte siempre con un profesional '
+          'médico cualificado.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Entendido'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _initializeChatbot() {

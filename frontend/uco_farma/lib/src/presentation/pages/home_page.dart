@@ -132,7 +132,21 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-      body: _getPage(),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.5,
+              child: Image.asset(
+                'assets/images/logo-removebg.png',
+                width: 50,
+                height: 50,
+              ),
+            ),
+          ),
+          _getPage(),
+        ],
+      ),
       floatingActionButton: _selectedIndex == 0
           ? FloatingActionButton(
               elevation: 4,
@@ -155,8 +169,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddMedicineManualPage()));
+                                      builder: (context) => const AddMedicineManualPage()));
                             },
                           ),
                           ListTile(
@@ -167,8 +180,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddMedicineNFCPage()));
+                                      builder: (context) => const AddMedicineNFCPage()));
                             },
                           ),
                           ListTile(
@@ -179,8 +191,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddMedicineQRPage()));
+                                      builder: (context) => const AddMedicineQRPage()));
                             },
                           ),
                         ],

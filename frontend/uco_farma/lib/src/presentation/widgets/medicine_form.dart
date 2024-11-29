@@ -9,6 +9,7 @@ class MedicineForm extends StatelessWidget {
   final bool isLoading;
   final String? error;
   final String? scannedCN;
+  final String? medicineName;
   final Function() onAddMedicine;
   final Function(String) onTypeChanged;
 
@@ -22,6 +23,7 @@ class MedicineForm extends StatelessWidget {
     required this.isLoading,
     required this.error,
     this.scannedCN,
+    this.medicineName,
     required this.onAddMedicine,
     required this.onTypeChanged,
   });
@@ -39,12 +41,22 @@ class MedicineForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (scannedCN != null)
+          if (scannedCN != null) ...[
             Text(
               'Código Nacional: $scannedCN',
               style: theme.textTheme.titleMedium,
             ),
-          const SizedBox(height: 16),
+            if (medicineName != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Medicamento: $medicineName',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ],
+            const SizedBox(height: 16),
+          ],
           Row(
             children: [
               Expanded(

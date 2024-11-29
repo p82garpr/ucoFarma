@@ -17,13 +17,78 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
   final _quantityController = TextEditingController();
   final _frequencyController = TextEditingController(text: '0');
   final _doseQuantityController = TextEditingController(text: '0');
-
+  String? _medicineName;
+  
   bool _isLoading = false;
   String? _error;
   String _selectedType = 'solid';
   String? _scannedCN;
   bool _showForm = false;
 
+  Future<void> _getMedicineName(String cn) async {
+    final medicineProvider = Provider.of<MedicineProvider>(context, listen: false);
+    
+    try {
+      final result = await medicineProvider.getMedicineCimaInfo(cn);
+      if (result) {
+        setState(() {
+          _medicineName = medicineProvider.cimaMedicine?.nombre;
+        });
+      }
+    } catch (e) {
+      // Manejar el error si es necesario
+    }
+  }
+
+  void _onDetect(BarcodeCapture capture) async {
+    final List<Barcode> barcodes = capture.barcodes;
+    for (final barcode in barcodes) {
+      if (barcode.rawValue != null) {
+        setState(() {
+          _scannedCN = barcode.rawValue;
+          _showForm = true;
+        });
+        await _getMedicineName(barcode.rawValue!);
+        break;
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Escanear QR',
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: theme.colorScheme.onPrimary,
+          ),
+        ),
+        backgroundColor: theme.colorScheme.primary,
+      ),
+      body: _showForm
+          ? SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: MedicineForm(
+                formKey: _formKey,
+                quantityController: _quantityController,
+                frequencyController: _frequencyController,
+                doseQuantityController: _doseQuantityController,
+                selectedType: _selectedType,
+                isLoading: _isLoading,
+                error: _error,
+                scannedCN: _scannedCN,
+                medicineName: _medicineName,
+                onAddMedicine: _addMedicine,
+                onTypeChanged: (value) => setState(() => _selectedType = value),
+              ),
+            )
+          : _buildQRScanner(theme),
+    );
+  }
+  
   @override
   void dispose() {
     _quantityController.dispose();
@@ -45,8 +110,7 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
       final navigator = Navigator.of(context);
 
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final medicineProvider =
-          Provider.of<MedicineProvider>(context, listen: false);
+      final medicineProvider = Provider.of<MedicineProvider>(context, listen: false);
 
       final userId = authProvider.user?.id;
       final token = authProvider.token;
@@ -77,8 +141,7 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
         );
         navigator.pop();
       } else {
-        throw Exception(
-            medicineProvider.error ?? 'Error al añadir el medicamento');
+        throw Exception(medicineProvider.error ?? 'Error al añadir el medicamento');
       }
     } catch (e) {
       if (!mounted) return;
@@ -88,111 +151,44 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Escanear QR',
-          style: theme.textTheme.titleLarge?.copyWith(
-            color: theme.colorScheme.onPrimary,
-          ),
-        ),
-        backgroundColor: theme.colorScheme.primary,
-      ),
-      body: _showForm
-          ? SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: MedicineForm(
-                formKey: _formKey,
-                quantityController: _quantityController,
-                frequencyController: _frequencyController,
-                doseQuantityController: _doseQuantityController,
-                selectedType: _selectedType,
-                isLoading: _isLoading,
-                error: _error,
-                scannedCN: _scannedCN,
-                onAddMedicine: _addMedicine,
-                onTypeChanged: (value) => setState(() => _selectedType = value),
-              ),
-            )
-          : _buildScanner(),
-    );
-  }
-
-  Widget _buildScanner() {
+  Widget _buildQRScanner(ThemeData theme) {
     return Stack(
       children: [
         MobileScanner(
-          onDetect: (capture) {
-            final List<Barcode> barcodes = capture.barcodes;
-            if (barcodes.isNotEmpty && barcodes.first.rawValue != null) {
-              final String scannedValue = barcodes.first.rawValue!;
-              setState(() {
-                _scannedCN = scannedValue;
-                _showForm = true;
-                _error = null;
-              });
-            }
-          },
+          onDetect: _onDetect,
         ),
         Container(
           decoration: BoxDecoration(
             color: Colors.black.withOpacity(0.5),
           ),
-          child: Stack(
-            children: [
-              Center(
-                child: Container(
-                  width: 250,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+          child: Center(
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: theme.colorScheme.primary,
+                  width: 2,
                 ),
               ),
-              Positioned(
-                bottom: 40,
-                left: 0,
-                right: 0,
-                child: Column(
-                  children: [
-                    if (_error != null)
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          _error!,
-                          style: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text(
-                        'Coloca el código QR dentro del marco',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
         ),
+        if (_error != null)
+          Positioned(
+            bottom: 20,
+            left: 20,
+            right: 20,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              color: theme.colorScheme.error,
+              child: Text(
+                _error!,
+                style: TextStyle(color: theme.colorScheme.onError),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
       ],
     );
   }

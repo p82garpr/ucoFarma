@@ -97,58 +97,60 @@ class _ChatPageState extends State<ChatPage> {
                         return const TypingIndicator();
                       }
                       final message = chatProvider.messages[index];
-                      return Align(
-                        alignment: message.isUserMessage 
-                          ? Alignment.centerRight 
-                          : Alignment.centerLeft,
-                        child: Container(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.75,
-                          ),
-                          margin: const EdgeInsets.symmetric(vertical: 4),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: message.isUserMessage
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.secondary,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Markdown(
-                            data: message.text,
-                            shrinkWrap: true,
-                            styleSheet: MarkdownStyleSheet(
-                              p: theme.textTheme.bodyMedium?.copyWith(
-                                color: message.isUserMessage
-                                  ? theme.colorScheme.onPrimary
-                                  : theme.colorScheme.onSecondary,
-                              ),
-                              strong: theme.textTheme.bodyMedium?.copyWith(
-                                color: message.isUserMessage
-                                  ? theme.colorScheme.onPrimary
-                                  : theme.colorScheme.onSecondary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              em: theme.textTheme.bodyMedium?.copyWith(
-                                color: message.isUserMessage
-                                  ? theme.colorScheme.onPrimary
-                                  : theme.colorScheme.onSecondary,
-                                fontStyle: FontStyle.italic,
-                              ),
-                              h1: theme.textTheme.titleLarge?.copyWith(
-                                color: message.isUserMessage
-                                  ? theme.colorScheme.onPrimary
-                                  : theme.colorScheme.onSecondary,
-                              ),
-                              h2: theme.textTheme.titleMedium?.copyWith(
-                                color: message.isUserMessage
-                                  ? theme.colorScheme.onPrimary
-                                  : theme.colorScheme.onSecondary,
-                              ),
+                      return IgnorePointer(
+                        child: Align(
+                          alignment: message.isUserMessage 
+                            ? Alignment.centerRight 
+                            : Alignment.centerLeft,
+                          child: Container(
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width * 0.75,
                             ),
-                            padding: EdgeInsets.zero,
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: message.isUserMessage
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.secondary,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Markdown(
+                              data: message.text,
+                              shrinkWrap: true,
+                              styleSheet: MarkdownStyleSheet(
+                                p: theme.textTheme.bodyMedium?.copyWith(
+                                  color: message.isUserMessage
+                                    ? theme.colorScheme.onPrimary
+                                    : theme.colorScheme.onSecondary,
+                                ),
+                                strong: theme.textTheme.bodyMedium?.copyWith(
+                                  color: message.isUserMessage
+                                    ? theme.colorScheme.onPrimary
+                                    : theme.colorScheme.onSecondary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                em: theme.textTheme.bodyMedium?.copyWith(
+                                  color: message.isUserMessage
+                                    ? theme.colorScheme.onPrimary
+                                    : theme.colorScheme.onSecondary,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                                h1: theme.textTheme.titleLarge?.copyWith(
+                                  color: message.isUserMessage
+                                    ? theme.colorScheme.onPrimary
+                                    : theme.colorScheme.onSecondary,
+                                ),
+                                h2: theme.textTheme.titleMedium?.copyWith(
+                                  color: message.isUserMessage
+                                    ? theme.colorScheme.onPrimary
+                                    : theme.colorScheme.onSecondary,
+                                ),
+                              ),
+                              padding: EdgeInsets.zero,
+                            ),
                           ),
                         ),
                       );
@@ -237,8 +239,30 @@ class _ChatPageState extends State<ChatPage> {
   }
 }
 
-class TypingIndicator extends StatelessWidget {
+class TypingIndicator extends StatefulWidget {
   const TypingIndicator({super.key});
+
+  @override
+  State<TypingIndicator> createState() => _TypingIndicatorState();
+}
+
+class _TypingIndicatorState extends State<TypingIndicator> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -255,26 +279,24 @@ class TypingIndicator extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: List.generate(3, (index) {
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 2),
-              height: 6,
-              width: 6,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.onSecondary,
-                shape: BoxShape.circle,
-              ),
-              child: TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: 1),
-                duration: Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                builder: (context, value, child) {
-                  return Transform.translate(
-                    offset: Offset(0, -3 * sin(value * 3.14 + index * 0.5) * 2),
-                    child: child,
-                  );
-                },
-                child: const SizedBox(),
-              ),
+            return AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  height: 6,
+                  width: 6,
+                  transform: Matrix4.translationValues(
+                    0, 
+                    -4 * sin((_controller.value * 2 * 3.14159) + (index * 1.0)), 
+                    0
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.onSecondary,
+                    shape: BoxShape.circle,
+                  ),
+                );
+              },
             );
           }),
         ),

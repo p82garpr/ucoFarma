@@ -21,13 +21,72 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   Widget _getPage() {
+    final theme = Theme.of(context);
+    
     switch (_selectedIndex) {
       case 0:
-        return _buildInventoryPage();
+        return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(
+              'UCO Farma',
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: theme.colorScheme.onPrimary,
+              ),
+            ),
+            backgroundColor: theme.colorScheme.primary,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.help_outline),
+                onPressed: () => _showHelpDialog(context, theme),
+                color: theme.colorScheme.onPrimary,
+              ),
+            ],
+          ),
+          body: _buildInventoryPage(),
+        );
       case 1:
-        return _buildShoplistPage();
+        return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(
+              'Lista de Compra',
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: theme.colorScheme.onPrimary,
+              ),
+            ),
+            backgroundColor: theme.colorScheme.primary,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.help_outline),
+                onPressed: () => _showHelpDialog(context, theme),
+                color: theme.colorScheme.onPrimary,
+              ),
+            ],
+          ),
+          body: _buildShoplistPage(),
+        );
       case 2:
-        return const ChatPage();
+        return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(
+              'ChatBot',
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: theme.colorScheme.onPrimary,
+              ),
+            ),
+            backgroundColor: theme.colorScheme.primary,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.help_outline),
+                onPressed: () => _showHelpDialog(context, theme),
+                color: theme.colorScheme.onPrimary,
+              ),
+            ],
+          ),
+          body: const ChatPage(),
+        );
       case 3:
         return const ProfilePage();
       default:
@@ -181,128 +240,109 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-                'UCO Farma',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  color: theme.colorScheme.onPrimary,
-                ),
-              ),
-        backgroundColor: theme.colorScheme.primary,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline),
-            onPressed: () => _showHelpDialog(context, theme),
-            color: theme.colorScheme.onPrimary,
-          ),
-        ],
-      ),
-      body: Stack(
+    return Material(
+      child: Stack(
         children: [
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.5,
-              child: Image.asset(
-                'assets/images/logo-removebg.png',
-                width: 50,
-                height: 50,
-              ),
+          _getPage(),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: NavigationBar(
+              backgroundColor: theme.colorScheme.primary,
+              indicatorColor: theme.colorScheme.onPrimary.withOpacity(0.2),
+              height: 65,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+              elevation: 3,
+              selectedIndex: _selectedIndex,
+              onDestinationSelected: (int index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              destinations: [
+                NavigationDestination(
+                  icon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary, size: 24),
+                  selectedIcon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary),
+                  label: 'Inventario',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary, size: 24),
+                  selectedIcon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
+                  label: 'Lista Compra',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.chat, color: theme.colorScheme.onPrimary, size: 24),
+                  selectedIcon: Icon(Icons.chat, color: theme.colorScheme.onPrimary),
+                  label: 'ChatBot',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.person, color: theme.colorScheme.onPrimary, size: 24),
+                  selectedIcon: Icon(Icons.person, color: theme.colorScheme.onPrimary),
+                  label: 'Perfil',
+                ),
+              ],
             ),
           ),
-          _getPage(),
-        ],
-      ),
-      floatingActionButton: _selectedIndex == 0
-          ? FloatingActionButton(
-              elevation: 4,
-              backgroundColor: theme.colorScheme.secondary,
-              foregroundColor: theme.colorScheme.onSecondary,
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Añadir Medicamento'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            leading: const Icon(Icons.edit),
-                            title: const Text('Manualmente'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const AddMedicineManualPage()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.nfc),
-                            title: const Text('Escanear NFC'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const AddMedicineNFCPage()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.qr_code),
-                            title: const Text('Escanear QR'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const AddMedicineQRPage()));
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-              child: const Icon(Icons.add),
-            )
-          : null,
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: theme.colorScheme.primary,
-        indicatorColor: theme.colorScheme.onPrimary.withOpacity(0.2),
-        height: 65,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        elevation: 3,
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        destinations: [
-          NavigationDestination(
-            icon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary),
-            selectedIcon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary),
-            label: 'Inventario',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
-            selectedIcon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
-            label: 'Lista Compra',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.chat, color: theme.colorScheme.onPrimary),
-            selectedIcon: Icon(Icons.chat, color: theme.colorScheme.onPrimary),
-            label: 'ChatBot',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person, color: theme.colorScheme.onPrimary),
-            selectedIcon: Icon(Icons.person, color: theme.colorScheme.onPrimary),
-            label: 'Perfil',
-          ),
+          if (_selectedIndex == 0)
+            Positioned(
+              right: 16,
+              bottom: 100,
+              child: FloatingActionButton(
+                elevation: 4,
+                backgroundColor: theme.colorScheme.secondary,
+                foregroundColor: theme.colorScheme.onSecondary,
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Añadir Medicamento'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: const Icon(Icons.edit),
+                              title: const Text('Manualmente'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const AddMedicineManualPage()));
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.nfc),
+                              title: const Text('Escanear NFC'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const AddMedicineNFCPage()));
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.qr_code),
+                              title: const Text('Escanear QR'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const AddMedicineQRPage()));
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: const Icon(Icons.add),
+              ),
+            ),
         ],
       ),
     );

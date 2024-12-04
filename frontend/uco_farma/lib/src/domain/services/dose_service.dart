@@ -1,16 +1,17 @@
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class DoseService {
   final String _baseUrl = 'http://10.0.2.2:8000';
 
-  Future<Map<String, dynamic>> takeDose(String userId, String cn, int quantity, String token) async {
+  Future<Map<String, dynamic>> takeDose(
+      String userId, String cn, int quantity, String token) async {
     try {
       final queryParameters = {'cn': cn, 'quantity': quantity.toString()};
-      
+
       final response = await http.put(
-        Uri.parse('$_baseUrl/medicines/$userId/take-medicine').replace(queryParameters: queryParameters),
+        Uri.parse('$_baseUrl/medicines/$userId/take-medicine')
+            .replace(queryParameters: queryParameters),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -36,11 +37,24 @@ class DoseService {
     }
   }
 
-  Future<Map<String,dynamic>> updateDose(String userId, String cn, int frequency, int quantity, String token) async {
+  Future<Map<String, dynamic>> updateDose(
+      String userId,
+      String cn,
+      int frequency,
+      int quantity,
+      String startDate,
+      String endDate,
+      String token) async {
     try {
-      final queryParameters = {'frequency': frequency.toString(), 'quantity': quantity.toString()};
+      final queryParameters = {
+        'frequency': frequency.toString(),
+        'quantity': quantity.toString(),
+        'startDate': startDate.toString(),
+        'endDate': endDate.toString(),
+      };
       final response = await http.put(
-        Uri.parse('$_baseUrl/doses/$userId/$cn').replace(queryParameters: queryParameters),
+        Uri.parse('$_baseUrl/doses/$userId/$cn')
+            .replace(queryParameters: queryParameters),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -62,8 +76,5 @@ class DoseService {
         'message': e.toString(),
       };
     }
-
   }
-
-
 }

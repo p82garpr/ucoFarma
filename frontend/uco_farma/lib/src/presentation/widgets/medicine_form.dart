@@ -53,19 +53,21 @@ class _MedicineFormState extends State<MedicineForm> {
     );
     if (!mounted || picked == null) return;
 
-    final TimeOfDay? time = await showTimePicker(
+    /*final TimeOfDay? time = await showTimePicker( //esto lo que hace es
       context: context,
       initialTime: TimeOfDay.now(),
     );
+    
     if (!mounted || time == null) return;
+    */
 
     setState(() {
       _startDate = DateTime(
         picked.year,
         picked.month,
         picked.day,
-        time.hour,
-        time.minute,
+        //time.hour,
+        //time.minute,
       );
       widget.startDateController.text = _startDate!.toIso8601String();
     });
@@ -81,19 +83,20 @@ class _MedicineFormState extends State<MedicineForm> {
     );
     if (!mounted || picked == null) return;
 
-    final TimeOfDay? time = await showTimePicker(
+    /*final TimeOfDay? time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
     if (!mounted || time == null) return;
+    */
 
     setState(() {
       _endDate = DateTime(
         picked.year,
         picked.month,
         picked.day,
-        time.hour,
-        time.minute,
+        //time.hour,
+        //time.minute,
       );
       widget.endDateController.text = _endDate!.toIso8601String();
     });
@@ -254,7 +257,7 @@ class _MedicineFormState extends State<MedicineForm> {
                                   child: Text(
                                     _startDate == null
                                         ? 'Seleccionar inicio'
-                                        : '${_startDate!.day}/${_startDate!.month}/${_startDate!.year} a las ${_startDate!.hour.toString().padLeft(2, '0')}:${_startDate!.minute.toString().padLeft(2, '0')}',
+                                        : '${_startDate!.day}/${_startDate!.month}/${_startDate!.year}',
                                     style: theme.textTheme.bodyLarge,
                                   ),
                                 ),
@@ -284,7 +287,7 @@ class _MedicineFormState extends State<MedicineForm> {
                                   child: Text(
                                     _endDate == null
                                         ? 'Seleccionar fin'
-                                        : '${_endDate!.day}/${_endDate!.month}/${_endDate!.year} a las ${_endDate!.hour.toString().padLeft(2, '0')}:${_endDate!.minute.toString().padLeft(2, '0')}',
+                                        : '${_endDate!.day}/${_endDate!.month}/${_endDate!.year}',
                                     style: theme.textTheme.bodyLarge,
                                   ),
                                 ),

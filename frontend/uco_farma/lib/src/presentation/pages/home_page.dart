@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:uco_farma/src/presentation/pages/add_medicine_nfc_page.dart';
 import '../providers/auth_provider.dart';
 import 'login_page.dart';
@@ -10,6 +9,7 @@ import 'add_medicine_manual_page.dart';
 import 'add_medicine_qr_page.dart';
 import 'medicine_info_page.dart';
 import 'profile_page.dart';
+import '../widgets/calendar_events.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,15 +20,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  DateTime? _selectedDay;
-  DateTime _focusedDay = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    _selectedDay = _focusedDay;
   }
-
 
   Widget _getPage() {
     switch (_selectedIndex) {
@@ -114,52 +110,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCalendarPage() {
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, _) {
-        final theme = Theme.of(context); // Obtén el tema actual
-        return TableCalendar(
-          focusedDay: _focusedDay,
-          firstDay: DateTime.utc(2024, 9, 15),
-          lastDay: DateTime.utc(2050, 12, 31),
-          startingDayOfWeek: StartingDayOfWeek.monday,
-          calendarStyle: CalendarStyle(
-            todayTextStyle: TextStyle(color: theme.colorScheme.onPrimary),
-            todayDecoration: BoxDecoration(
-              color: theme.colorScheme.primary,
-              shape: BoxShape.circle,
-            ),
-            selectedDecoration: BoxDecoration(
-              color: theme.colorScheme.secondary,
-              shape: BoxShape.circle,
-            ),
-            weekendTextStyle: TextStyle(color: theme.colorScheme.error),
-            defaultTextStyle: TextStyle(color: theme.colorScheme.primary),
-            outsideDaysVisible: false,
-          ),
-          daysOfWeekStyle: DaysOfWeekStyle(
-            weekdayStyle: theme.textTheme.bodySmall!,
-            weekendStyle: theme.textTheme.bodySmall!.copyWith(
-              color: theme.colorScheme.secondary,
-            ),
-          ),
-          headerStyle: HeaderStyle(
-            formatButtonVisible: false,
-            titleCentered: true,
-            titleTextStyle: theme.textTheme.titleLarge!,
-            leftChevronIcon:
-                Icon(Icons.chevron_left, color: theme.colorScheme.primary),
-            rightChevronIcon:
-                Icon(Icons.chevron_right, color: theme.colorScheme.primary),
-          ),
-          onDaySelected: (selectedDay, focusedDay) => setState(() {
-            _selectedDay = selectedDay;
-            _focusedDay = focusedDay;
-          }),
-          selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-        );
-      },
+    return const Padding(
+      padding: EdgeInsets.all(8.0),
+      child: CalendarEvents(),
     );
   }
 

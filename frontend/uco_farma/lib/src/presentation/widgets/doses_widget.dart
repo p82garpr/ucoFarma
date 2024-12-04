@@ -16,7 +16,7 @@ class DosesWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final authProvider = context.watch<AuthProvider>();
     final doseProvider = context.read<DoseProvider>();
-    
+
     final medicine = authProvider.user?.medicines?.firstWhere(
       (med) => med.cn == cn,
       orElse: () => throw Exception('Medicamento no encontrado'),
@@ -28,7 +28,6 @@ class DosesWidget extends StatelessWidget {
 
     final dose = medicine.doses?.firstOrNull;
 
-
     return SingleChildScrollView(
       child: SafeArea(
         child: Padding(
@@ -38,7 +37,7 @@ class DosesWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 24),
-              
+
               // Card principal con la información de dosis
               Card(
                 elevation: 4,
@@ -74,9 +73,9 @@ class DosesWidget extends StatelessWidget {
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 20),
-                      
+
                       // Frecuencia
                       Row(
                         children: [
@@ -108,9 +107,9 @@ class DosesWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Botones de acción
               Row(
                 children: [
@@ -118,12 +117,11 @@ class DosesWidget extends StatelessWidget {
                     child: ElevatedButton.icon(
                       onPressed: () async {
                         final success = await doseProvider.takeDose(
-                          authProvider.user?.id ?? '', 
-                          cn, 
-                          (dose?.quantity ?? 0).toInt(), 
-                          authProvider.token ?? ''
-                        );
-                        
+                            authProvider.user?.id ?? '',
+                            cn,
+                            (dose?.quantity ?? 0).toInt(),
+                            authProvider.token ?? '');
+
                         if (success) {
                           authProvider.refreshUserData();
                           if (!context.mounted) return;
@@ -137,7 +135,8 @@ class DosesWidget extends StatelessWidget {
                           if (!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(doseProvider.error ?? 'Error al tomar la dosis'),
+                              content: Text(doseProvider.error ??
+                                  'Error al tomar la dosis'),
                               backgroundColor: theme.colorScheme.error,
                             ),
                           );
@@ -156,35 +155,148 @@ class DosesWidget extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       final quantityController = TextEditingController(
-                        text: (dose?.quantity ?? 0).toString()
-                      );
+                          text: (dose?.quantity ?? 0).toString());
                       final frequencyController = TextEditingController(
-                        text: (dose?.frequency ?? 0).toString()
-                      );
+                          text: (dose?.frequency ?? 0).toString());
+                      final startDateController =
+                          TextEditingController(text: dose?.startDate ?? '');
+                      final endDateController =
+                          TextEditingController(text: dose?.endDate ?? '');
 
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
                           title: const Text('Editar dosis'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextField(
-                                controller: quantityController,
-                                decoration: InputDecoration(
-                                  labelText: 'Cantidad (${_getUnits(medicine.type)})',
+                          content: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextFormField(
+                                  controller: quantityController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Cantidad por toma',
+                                    helperText:
+                                        'Cantidad a tomar en cada dosis',
+                                    suffixText: _getUnits(medicine.type),
+                                  ),
+                                  keyboardType: TextInputType.number,
                                 ),
-                                keyboardType: TextInputType.number,
-                              ),
-                              const SizedBox(height: 16),
-                              TextField(
-                                controller: frequencyController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Frecuencia (horas)',
+                                const SizedBox(height: 16),
+                                TextFormField(
+                                  controller: frequencyController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Frecuencia',
+                                    helperText:
+                                        'Cada cuántas horas tomar la dosis',
+                                    suffixText: 'horas',
+                                  ),
+                                  keyboardType: TextInputType.number,
                                 ),
-                                keyboardType: TextInputType.number,
-                              ),
-                            ],
+                                const SizedBox(height: 24),
+                                // Fecha de inicio
+                                InkWell(
+                                  onTap: () async {
+                                    final DateTime? picked =
+                                        await showDatePicker(
+                                      context: context,
+                                      initialDate: dose?.startDate != null
+                                          ? DateTime.parse(dose!.startDate)
+                                          : DateTime.now(),
+                                      firstDate: DateTime.now(),
+                                      lastDate: DateTime(2101),
+                                    );
+                                    if (picked != null) {
+                                      startDateController.text =
+                                          picked.toIso8601String();
+                                    }
+                                  },
+                                  child: InputDecorator(
+                                    decoration: InputDecoration(
+                                      labelText: 'Inicio del tratamiento',
+                                      prefixIcon:
+                                          const Icon(Icons.calendar_today),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            startDateController.text.isNotEmpty
+                                                ? '${DateTime.parse(startDateController.text).day}/'
+                                                    '${DateTime.parse(startDateController.text).month}/'
+                                                    '${DateTime.parse(startDateController.text).year}'
+                                                : 'Seleccionar inicio',
+                                            style: theme.textTheme.bodyLarge,
+                                          ),
+                                        ),
+                                        Icon(Icons.arrow_drop_down,
+                                            color: theme.colorScheme.primary),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                // Fecha de fin
+                                InkWell(
+                                  onTap: () async {
+                                    if (startDateController.text.isEmpty) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Primero selecciona una fecha de inicio'),
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    final DateTime? picked =
+                                        await showDatePicker(
+                                      context: context,
+                                      initialDate: dose?.endDate != null
+                                          ? DateTime.parse(dose!.endDate)
+                                          : DateTime.parse(
+                                              startDateController.text),
+                                      firstDate: DateTime.parse(
+                                          startDateController.text),
+                                      lastDate: DateTime(2101),
+                                    );
+                                    if (picked != null) {
+                                      endDateController.text =
+                                          picked.toIso8601String();
+                                    }
+                                  },
+                                  child: InputDecorator(
+                                    decoration: InputDecoration(
+                                      labelText: 'Fin del tratamiento',
+                                      prefixIcon:
+                                          const Icon(Icons.calendar_today),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            endDateController.text.isNotEmpty
+                                                ? '${DateTime.parse(endDateController.text).day}/'
+                                                    '${DateTime.parse(endDateController.text).month}/'
+                                                    '${DateTime.parse(endDateController.text).year}'
+                                                : 'Seleccionar fin',
+                                            style: theme.textTheme.bodyLarge,
+                                          ),
+                                        ),
+                                        Icon(Icons.arrow_drop_down,
+                                            color: theme.colorScheme.primary),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           actions: [
                             TextButton(
@@ -193,14 +305,25 @@ class DosesWidget extends StatelessWidget {
                             ),
                             FilledButton(
                               onPressed: () async {
+                                if (startDateController.text.isEmpty ||
+                                    endDateController.text.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text('Las fechas son obligatorias'),
+                                    ),
+                                  );
+                                  return;
+                                }
+
                                 final success = await doseProvider.updateDose(
                                   authProvider.user?.id ?? '',
                                   cn,
                                   int.tryParse(frequencyController.text) ?? 0,
                                   int.tryParse(quantityController.text) ?? 0,
-                                  dose?.startDate ?? '',
-                                  dose?.endDate ?? '',
-                                  authProvider.token ?? ''
+                                  startDateController.text,
+                                  endDateController.text,
+                                  authProvider.token ?? '',
                                 );
 
                                 if (!context.mounted) return;
@@ -211,15 +334,18 @@ class DosesWidget extends StatelessWidget {
                                   if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: const Text('Dosis actualizada correctamente'),
-                                      backgroundColor: theme.colorScheme.secondary,
+                                      content: const Text(
+                                          'Dosis actualizada correctamente'),
+                                      backgroundColor:
+                                          theme.colorScheme.secondary,
                                     ),
                                   );
                                 } else {
                                   if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(doseProvider.error ?? 'Error al actualizar la dosis'),
+                                      content: Text(doseProvider.error ??
+                                          'Error al actualizar la dosis'),
                                       backgroundColor: theme.colorScheme.error,
                                     ),
                                   );

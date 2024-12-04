@@ -9,7 +9,7 @@ import 'add_medicine_manual_page.dart';
 import 'add_medicine_qr_page.dart';
 import 'medicine_info_page.dart';
 import 'profile_page.dart';
-import '../widgets/calendar_events.dart';
+import '../widgets/calendar_events_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

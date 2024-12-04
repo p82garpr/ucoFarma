@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uco_farma/src/presentation/widgets/schedule_notification_dialog.dart';
 import '../providers/medicine_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/shoplist_provider.dart';
@@ -51,7 +52,7 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
           iconColor = isActive ? Colors.green : Colors.grey;
         }
 
-        return Container(
+        return SizedBox(
           width: 85,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -289,6 +290,27 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
             ),
           ),
           const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => ScheduleNotificationDialog(
+                    medicineName: medicine.nombre,
+                  ),
+                );
+              },
+              icon: const Icon(Icons.notification_add),
+              label: const Text('Programar recordatorio'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.secondaryContainer,
+                foregroundColor: theme.colorScheme.onSecondaryContainer,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(

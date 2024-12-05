@@ -17,6 +17,10 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
   final _quantityController = TextEditingController();
   final _frequencyController = TextEditingController(text: '0');
   final _doseQuantityController = TextEditingController(text: '0');
+  final _doseStartDateTimeController =
+      TextEditingController(text: DateTime.now().toString());
+  final _doseEndDateTimeController =
+      TextEditingController(text: DateTime.now().toString());
 
   String? _medicineName;
 
@@ -129,6 +133,8 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
         int.parse(_frequencyController.text),
         double.parse(_doseQuantityController.text),
         false,
+        _doseStartDateTimeController.text.trim(),
+        _doseEndDateTimeController.text.trim(),
       );
 
       if (!mounted) return;
@@ -165,6 +171,10 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
             color: theme.colorScheme.onPrimary,
           ),
         ),
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary),
+        ),
         backgroundColor: theme.colorScheme.primary,
       ),
       body: _showForm
@@ -175,6 +185,8 @@ class _AddMedicineNFCPageState extends State<AddMedicineNFCPage> {
                 quantityController: _quantityController,
                 frequencyController: _frequencyController,
                 doseQuantityController: _doseQuantityController,
+                startDateController: _doseStartDateTimeController,
+                endDateController: _doseEndDateTimeController,
                 selectedType: _selectedType,
                 isLoading: _isLoading,
                 error: _error,

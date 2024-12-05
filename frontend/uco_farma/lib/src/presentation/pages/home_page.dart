@@ -9,6 +9,7 @@ import 'add_medicine_qr_page.dart';
 import 'medicine_info_page.dart';
 import 'chat_page.dart';
 import 'profile_page.dart';
+import '../widgets/calendar_events_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,6 +20,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Widget _getPage() {
     final theme = Theme.of(context);
@@ -67,6 +73,8 @@ class _HomePageState extends State<HomePage> {
           body: _buildShoplistPage(),
         );
       case 2:
+        return _buildCalendarPage();
+      case 3:
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -90,7 +98,8 @@ class _HomePageState extends State<HomePage> {
             child: const ChatPage(),
           ),
         );
-      case 3:
+        
+      case 4:
         return const ProfilePage();
       default:
         return _buildInventoryPage();
@@ -163,59 +172,66 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showHelpDialog(BuildContext context, ThemeData theme) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Guía de Uso'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildHelpSection(
-                  'Inventario',
-                  'Aquí puedes ver y gestionar tus medicamentos. Usa el botón + para añadir nuevos medicamentos de forma manual, por NFC o QR.',
-                  Icons.inventory_2,
-                  theme,
-                ),
-                const SizedBox(height: 16),
-                _buildHelpSection(
-                  'Lista de Compra',
-                  'Gestiona los medicamentos que necesitas comprar.',
-                  Icons.shopping_cart,
-                  theme,
-                ),
-                const SizedBox(height: 16),
-                _buildHelpSection(
-                  'ChatBot',
-                  'Consulta dudas sobre tus medicamentos con nuestro asistente virtual.',
-                  Icons.chat,
-                  theme,
-                ),
-                const SizedBox(height: 16),
-                _buildHelpSection(
-                  'Perfil',
-                  'Accede a tu información personal y configura tu cuenta.',
-                  Icons.person,
-                  theme,
-                ),
-              ],
+Widget _buildCalendarPage() {
+  return const Padding(
+    padding: EdgeInsets.all(8.0),
+    child: CalendarEvents(),
+  );
+}
+
+void _showHelpDialog(BuildContext context, ThemeData theme) {
+showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    return AlertDialog(
+      title: const Text('Guía de Uso'),
+      content: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHelpSection(
+              'Inventario',
+              'Aquí puedes ver y gestionar tus medicamentos. Usa el botón + para añadir nuevos medicamentos de forma manual, por NFC o QR.',
+              Icons.inventory_2,
+              theme,
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Entendido'),
+            const SizedBox(height: 16),
+            _buildHelpSection(
+              'Lista de Compra',
+              'Gestiona los medicamentos que necesitas comprar.',
+              Icons.shopping_cart,
+              theme,
+            ),
+            const SizedBox(height: 16),
+            _buildHelpSection(
+              'ChatBot',
+              'Consulta dudas sobre tus medicamentos con nuestro asistente virtual.',
+              Icons.chat,
+              theme,
+            ),
+            const SizedBox(height: 16),
+            _buildHelpSection(
+              'Perfil',
+              'Accede a tu información personal y configura tu cuenta.',
+              Icons.person,
+              theme,
             ),
           ],
-        );
-      },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Entendido'),
+        ),
+      ],
     );
-  }
-
-  Widget _buildHelpSection(String title, String description, IconData icon, ThemeData theme) {
+  },
+);
+}
+  
+Widget _buildHelpSection(String title, String description, IconData icon, ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -239,6 +255,9 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+  
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -259,23 +278,36 @@ class _HomePageState extends State<HomePage> {
         },
         destinations: [
           NavigationDestination(
-            icon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary, size: 24),
-            selectedIcon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary),
+
+            icon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary),
+            selectedIcon:
+                Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary),
             label: 'Inventario',
           ),
           NavigationDestination(
-            icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary, size: 24),
-            selectedIcon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
-            label: 'Lista Compra',
+            icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
+            selectedIcon:
+                Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
+            label: 'Lista',
           ),
           NavigationDestination(
-            icon: Icon(Icons.chat, color: theme.colorScheme.onPrimary, size: 24),
+            icon:
+                Icon(Icons.calendar_month, color: theme.colorScheme.onPrimary),
+            selectedIcon:
+                Icon(Icons.calendar_month, color: theme.colorScheme.onPrimary),
+            label: 'Calendario',
+
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.chat, color: theme.colorScheme.onPrimary),
             selectedIcon: Icon(Icons.chat, color: theme.colorScheme.onPrimary),
             label: 'ChatBot',
           ),
           NavigationDestination(
-            icon: Icon(Icons.person, color: theme.colorScheme.onPrimary, size: 24),
-            selectedIcon: Icon(Icons.person, color: theme.colorScheme.onPrimary),
+            icon: Icon(Icons.person, color: theme.colorScheme.onPrimary),
+            selectedIcon:
+                Icon(Icons.person, color: theme.colorScheme.onPrimary),
+
             label: 'Perfil',
           ),
         ],

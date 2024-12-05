@@ -44,10 +44,14 @@ class Medicine {
 class Dose {
   final int frequency;
   final int quantity;
+  final String startDate;
+  final String endDate;
 
   Dose({
     required this.frequency,
-    required this.quantity,
+    required this.quantity, 
+    required this.startDate,
+    required this.endDate,
   });
 
   factory Dose.fromJson(Map<String, dynamic> json) {
@@ -59,14 +63,18 @@ class Dose {
       quantity: json['quantity'] is int 
           ? json['quantity'] 
           : int.tryParse(json['quantity'].toString()) ?? 0,
+      startDate: json['startDate'] ?? '',
+      endDate: json['endDate'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() => {
         'frequency': frequency,
         'quantity': quantity,
+        'startDate': startDate,
+        'endDate': endDate,
       };
 
   @override
-  String toString() => 'Dose(frequency: $frequency, quantity: $quantity)';
+  String toString() => 'Dose(frequency: $frequency, quantity: $quantity, startDate: $startDate, endDate: $endDate)';
 }

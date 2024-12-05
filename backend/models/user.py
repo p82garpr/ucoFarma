@@ -11,6 +11,8 @@ class MedicineType(str, Enum):
 class Dose(BaseModel):
     frequency: int
     quantity: int
+    startDate: str
+    endDate: str
 
 class Medicine(BaseModel):
     cn: str

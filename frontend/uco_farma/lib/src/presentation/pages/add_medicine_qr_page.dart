@@ -17,8 +17,17 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
   final _quantityController = TextEditingController();
   final _frequencyController = TextEditingController(text: '0');
   final _doseQuantityController = TextEditingController(text: '0');
+  
+
+  final _doseStartDateTimeController =
+      TextEditingController(text: DateTime.now().toString());
+  final _doseEndDateTimeController =
+      TextEditingController(text: DateTime.now().toString());
+
+
   String? _medicineName;
   
+
   bool _isLoading = false;
   String? _error;
   String _selectedType = 'solid';
@@ -128,6 +137,8 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
         int.parse(_frequencyController.text),
         double.parse(_doseQuantityController.text),
         false,
+        _doseStartDateTimeController.text.trim(),
+        _doseEndDateTimeController.text.trim(),
       );
 
       if (!mounted) return;
@@ -151,7 +162,47 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
     }
   }
 
-  Widget _buildQRScanner(ThemeData theme) {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Escanear QR',
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: theme.colorScheme.onPrimary,
+          ),
+        ),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary),
+        ),
+        backgroundColor: theme.colorScheme.primary,
+      ),
+      body: _showForm
+          ? SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: MedicineForm(
+                formKey: _formKey,
+                quantityController: _quantityController,
+                frequencyController: _frequencyController,
+                doseQuantityController: _doseQuantityController,
+                startDateController: _doseStartDateTimeController,
+                endDateController: _doseEndDateTimeController,
+                selectedType: _selectedType,
+                isLoading: _isLoading,
+                error: _error,
+                scannedCN: _scannedCN,
+                onAddMedicine: _addMedicine,
+                onTypeChanged: (value) => setState(() => _selectedType = value),
+              ),
+            )
+          : _buildScanner(),
+    );
+  }
+
+  Widget _buildScanner() {
     return Stack(
       children: [
         MobileScanner(

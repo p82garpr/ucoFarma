@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class DoseService {
-  final String _baseUrl = 'https://ucofarma.onrender.com';
+  final String _baseUrl = 'http://10.0.2.2:8000';
 
   Future<Map<String, dynamic>> takeDose(
       String userId, String cn, int quantity, String token) async {

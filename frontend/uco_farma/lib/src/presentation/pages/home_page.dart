@@ -50,6 +50,63 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           body: _buildInventoryPage(),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return SizedBox(
+                    height: 200,
+                    child: Column(
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.edit),
+                          title: const Text('Añadir manualmente'),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AddMedicineManualPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.nfc),
+                          title: const Text('Añadir por NFC'),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AddMedicineNFCPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.qr_code),
+                          title: const Text('Añadir por QR'),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AddMedicineQRPage(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+            backgroundColor: theme.colorScheme.primary,
+            child: Icon(Icons.add, color: theme.colorScheme.onPrimary),
+          ),
         );
       case 1:
         return Scaffold(
@@ -73,7 +130,26 @@ class _HomePageState extends State<HomePage> {
           body: _buildShoplistPage(),
         );
       case 2:
-        return _buildCalendarPage();
+      return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(
+              'Calendario',
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: theme.colorScheme.onPrimary,
+              ),
+            ),
+            backgroundColor: theme.colorScheme.primary,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.help_outline),
+                onPressed: () => _showHelpDialog(context, theme),
+                color: theme.colorScheme.onPrimary,
+              ),
+            ],
+          ),
+          body: _buildCalendarPage(),
+        );
       case 3:
         return Scaffold(
           appBar: AppBar(

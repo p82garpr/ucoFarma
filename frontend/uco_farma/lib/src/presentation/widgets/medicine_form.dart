@@ -114,17 +114,17 @@ class _MedicineFormState extends State<MedicineForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
-          if (scannedCN != null) ...[
+          if (widget.scannedCN != null) ...[
             Text(
               'Código Nacional: ${widget.scannedCN}',
               style: theme.textTheme.titleMedium,
             ),
 
           //const SizedBox(height: 8 ),
-            if (medicineName != null) ...[
+            if (widget.medicineName != null) ...[
               const SizedBox(height: 8),
               Text(
-                'Medicamento: $medicineName',
+                'Medicamento: ${widget.medicineName}',
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: theme.colorScheme.primary,
                 ),

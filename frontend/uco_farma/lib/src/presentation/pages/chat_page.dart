@@ -129,6 +129,7 @@ class _ChatPageState extends State<ChatPage> {
                           child: Container(
                             constraints: BoxConstraints(
                               maxWidth: MediaQuery.of(context).size.width * 0.75,
+                              minWidth: 50,
                             ),
                             margin: const EdgeInsets.symmetric(vertical: 4),
                             padding: const EdgeInsets.symmetric(

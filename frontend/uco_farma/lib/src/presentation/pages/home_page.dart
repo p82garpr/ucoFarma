@@ -85,7 +85,10 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          body: const ChatPage(),
+          body: Container(
+            color: theme.scaffoldBackgroundColor,
+            child: const ChatPage(),
+          ),
         );
       case 3:
         return const ProfilePage();
@@ -240,109 +243,41 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      child: Stack(
-        children: [
-          _getPage(),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: NavigationBar(
-              backgroundColor: theme.colorScheme.primary,
-              indicatorColor: theme.colorScheme.onPrimary.withOpacity(0.2),
-              height: 65,
-              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-              elevation: 3,
-              selectedIndex: _selectedIndex,
-              onDestinationSelected: (int index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-              destinations: [
-                NavigationDestination(
-                  icon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary, size: 24),
-                  selectedIcon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary),
-                  label: 'Inventario',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary, size: 24),
-                  selectedIcon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
-                  label: 'Lista Compra',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.chat, color: theme.colorScheme.onPrimary, size: 24),
-                  selectedIcon: Icon(Icons.chat, color: theme.colorScheme.onPrimary),
-                  label: 'ChatBot',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.person, color: theme.colorScheme.onPrimary, size: 24),
-                  selectedIcon: Icon(Icons.person, color: theme.colorScheme.onPrimary),
-                  label: 'Perfil',
-                ),
-              ],
-            ),
+    return Scaffold(
+      body: _getPage(),
+      bottomNavigationBar: NavigationBar(
+        backgroundColor: theme.colorScheme.primary,
+        indicatorColor: theme.colorScheme.onPrimary.withOpacity(0.2),
+        height: 65,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        elevation: 3,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (int index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        destinations: [
+          NavigationDestination(
+            icon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary, size: 24),
+            selectedIcon: Icon(Icons.inventory_2, color: theme.colorScheme.onPrimary),
+            label: 'Inventario',
           ),
-          if (_selectedIndex == 0)
-            Positioned(
-              right: 16,
-              bottom: 100,
-              child: FloatingActionButton(
-                elevation: 4,
-                backgroundColor: theme.colorScheme.secondary,
-                foregroundColor: theme.colorScheme.onSecondary,
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Añadir Medicamento'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              leading: const Icon(Icons.edit),
-                              title: const Text('Manualmente'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const AddMedicineManualPage()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(Icons.nfc),
-                              title: const Text('Escanear NFC'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const AddMedicineNFCPage()));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(Icons.qr_code),
-                              title: const Text('Escanear QR'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const AddMedicineQRPage()));
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: const Icon(Icons.add),
-              ),
-            ),
+          NavigationDestination(
+            icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary, size: 24),
+            selectedIcon: Icon(Icons.shopping_cart, color: theme.colorScheme.onPrimary),
+            label: 'Lista Compra',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.chat, color: theme.colorScheme.onPrimary, size: 24),
+            selectedIcon: Icon(Icons.chat, color: theme.colorScheme.onPrimary),
+            label: 'ChatBot',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person, color: theme.colorScheme.onPrimary, size: 24),
+            selectedIcon: Icon(Icons.person, color: theme.colorScheme.onPrimary),
+            label: 'Perfil',
+          ),
         ],
       ),
     );

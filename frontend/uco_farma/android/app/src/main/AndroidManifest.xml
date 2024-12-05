@@ -4,10 +4,24 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.nfc" android:required="true" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.REQUEST_NOTIFICATION_IDLE_STATE"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:label="uco_farma"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <receiver android:name="me.carda.awesome_notifications.DartNotificationActionReceiver" />
+        <receiver android:name="me.carda.awesome_notifications.DartDismissedNotificationReceiver" />
+        <receiver android:name="me.carda.awesome_notifications.DartScheduledNotificationReceiver" />
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uco_farma/src/domain/services/notification_service.dart';
 import 'src/presentation/providers/auth_provider.dart';
 import 'src/presentation/providers/medicine_provider.dart';
 //import 'src/presentation/pages/login_page.dart';
@@ -11,6 +12,9 @@ import 'src/presentation/providers/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  final notificationService = NotificationService();
+  await notificationService.init();
   
   final authProvider = AuthProvider();
   final isAuthenticated = await authProvider.checkAuthStatus();

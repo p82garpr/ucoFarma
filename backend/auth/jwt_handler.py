@@ -10,7 +10,7 @@ load_dotenv()
 def create_access_token(data: dict):
     to_encode = data.copy()
     
-    expire = datetime.utcnow() + timedelta(minutes=15)
+    expire = datetime.utcnow() + timedelta(minutes=4320) # 3 días
     
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, os.getenv("SECRET_KEY"), algorithm=os.getenv("ALGORITHM"))

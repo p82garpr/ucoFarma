@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'login_page.dart';
+import '../providers/theme_provider.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -18,6 +19,7 @@ class ProfilePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Mi Perfil',
           style: theme.textTheme.titleLarge?.copyWith(
@@ -25,13 +27,21 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
         backgroundColor: theme.colorScheme.primary,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: theme.colorScheme.onPrimary,
-          onPressed: () => Navigator.pop(context),
-        ),
         actions: [
-            
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return IconButton(
+                icon: Icon(
+                  themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                  color: theme.colorScheme.onPrimary,
+                ),
+                onPressed: () {
+                  themeProvider.toggleTheme();
+                },
+                tooltip: themeProvider.isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro',
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.lock_outline),
             color: theme.colorScheme.onPrimary,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uco_farma/src/presentation/widgets/schedule_notification_dialog.dart';
 import '../providers/medicine_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/shoplist_provider.dart';
@@ -51,25 +52,48 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
           iconColor = isActive ? Colors.green : Colors.grey;
         }
 
-        return InkWell(
-          onTap: () => _showInfoDialog(context, title, description),
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Icon(
-                  icon,
-                  color: iconColor,
-                  size: 32,
+        return SizedBox(
+          width: 85,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Contenedor para el icono principal y el icono de información
+              SizedBox(
+                height: 40,
+                child: Stack(
+                  children: [
+                    // Icono principal centrado
+                    Center(
+                      child: Icon(
+                        icon,
+                        color: iconColor,
+                        size: 32,
+                      ),
+                    ),
+                    // Icono de información
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: InkWell(
+                        onTap: () => _showInfoDialog(context, title, description),
+                        child: Icon(
+                          Icons.info_outline,
+                          size: 14,
+                          color: theme.colorScheme.outline,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  label,
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 4),
+              // Texto debajo
+              Text(
+                label,
+                style: theme.textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         );
       },
@@ -266,6 +290,27 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
             ),
           ),
           const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => ScheduleNotificationDialog(
+                    medicineName: medicine.nombre,
+                  ),
+                );
+              },
+              icon: const Icon(Icons.notification_add),
+              label: const Text('Programar recordatorio'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.secondaryContainer,
+                foregroundColor: theme.colorScheme.onSecondaryContainer,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(

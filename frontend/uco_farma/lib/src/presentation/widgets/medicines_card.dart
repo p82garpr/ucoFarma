@@ -71,14 +71,14 @@ class MedicinesCard extends StatelessWidget {
                     Row(
                       children: [
                         _PulsingText(
-                          text: 'Cantidad: ${medicine.quantity} dosis',
+                          text:
+                              'Cantidad: ${medicine.quantity} ${medicine.type == 'liquid' ? 'ml' : 'unidades'}',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: medicine.quantity <= 5 
-                              ? theme.colorScheme.error 
-                              : null,
-                            fontWeight: medicine.quantity <= 5 
-                              ? FontWeight.bold 
-                              : null,
+                            color: medicine.quantity <= 5
+                                ? theme.colorScheme.error
+                                : null,
+                            fontWeight:
+                                medicine.quantity <= 5 ? FontWeight.bold : null,
                           ),
                           shouldPulse: medicine.quantity <= 5,
                         ),
@@ -123,7 +123,8 @@ class _PulsingText extends StatefulWidget {
   State<_PulsingText> createState() => _PulsingTextState();
 }
 
-class _PulsingTextState extends State<_PulsingText> with SingleTickerProviderStateMixin {
+class _PulsingTextState extends State<_PulsingText>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -134,7 +135,7 @@ class _PulsingTextState extends State<_PulsingText> with SingleTickerProviderSta
       duration: const Duration(seconds: 2),
       vsync: this,
     )..repeat(reverse: true);
-    
+
     _animation = Tween<double>(begin: 1.0, end: 1.05).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
@@ -151,7 +152,7 @@ class _PulsingTextState extends State<_PulsingText> with SingleTickerProviderSta
     if (!widget.shouldPulse) {
       return Text(widget.text, style: widget.style);
     }
-    
+
     return ScaleTransition(
       scale: _animation,
       child: Text(

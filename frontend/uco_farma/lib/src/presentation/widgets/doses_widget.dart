@@ -167,7 +167,34 @@ class DosesWidget extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: const Text('Editar dosis'),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Editar dosis'),
+                              IconButton(
+                                onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Aviso importante'),
+                                      content: const Text(
+                                        'La modificación de las dosis debe realizarse bajo prescripción médica. UCOFarma no se hace responsable del uso inadecuado de los medicamentos ni de las consecuencias derivadas de la automedicación.',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Text('Entendido'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                                icon: Icon(Icons.warning_rounded,
+                                    color: theme.colorScheme.error),
+                              ),
+                            ],
+                          ),
                           content: SingleChildScrollView(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -201,7 +228,7 @@ class DosesWidget extends StatelessWidget {
                                     final DateTime? picked =
                                         await showDatePicker(
                                       context: context,
-                                      initialDate: dose?.startDate != null
+                                      initialDate: dose?.startDate != ""
                                           ? DateTime.parse(dose!.startDate)
                                           : DateTime.now(),
                                       firstDate: DateTime(1970),
@@ -256,7 +283,7 @@ class DosesWidget extends StatelessWidget {
                                     final DateTime? picked =
                                         await showDatePicker(
                                       context: context,
-                                      initialDate: dose?.endDate != null
+                                      initialDate: dose?.endDate != ""
                                           ? DateTime.parse(dose!.endDate)
                                           : DateTime.parse(
                                               startDateController.text),

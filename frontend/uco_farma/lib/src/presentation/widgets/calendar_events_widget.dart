@@ -109,123 +109,126 @@ class _CalendarEventsState extends State<CalendarEvents> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Column(
-      children: [
-        TableCalendar(
-          firstDay: DateTime.utc(1970, 1, 1),
-          lastDay: DateTime.utc(2025, 12, 31),
-          focusedDay: _focusedDay,
-          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-          eventLoader: _getEventsForDay,
-          onDaySelected: (selectedDay, focusedDay) {
-            setState(() {
-              _selectedDay = selectedDay;
-              _focusedDay = focusedDay;
-            });
-          },
-          headerStyle: const HeaderStyle(
-            formatButtonVisible: false,
-          ),
-          calendarStyle: CalendarStyle(
-            markersMaxCount: 1,
-            markerDecoration: BoxDecoration(
-              color: theme.colorScheme.primary,
-              shape: BoxShape.circle,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          TableCalendar(
+            firstDay: DateTime.utc(1970, 1, 1),
+            lastDay: DateTime.utc(2025, 12, 31),
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+            eventLoader: _getEventsForDay,
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _selectedDay = selectedDay;
+                _focusedDay = focusedDay;
+              });
+            },
+            headerStyle: const HeaderStyle(
+              formatButtonVisible: false,
             ),
-            todayTextStyle: TextStyle(color: theme.colorScheme.primary),
-            markerMargin: const EdgeInsets.only(top: 7),
-            todayDecoration: BoxDecoration(
-              border: Border.all(color: theme.colorScheme.primary, width: 2),
-              //color: theme.colorScheme.primary,
-              shape: BoxShape.circle,
-            ),
-            selectedTextStyle: TextStyle(color: theme.colorScheme.onPrimary),
-            selectedDecoration: BoxDecoration(
-              color: theme.colorScheme.primary,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        if (_selectedDay != null) ...[
-          Card(
-            elevation: 4,
-            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.medication_outlined,
-                        size: 28,
-                        color: theme.colorScheme.primary,
-                      ),
-                      const SizedBox(width: 16),
-                      Text(
-                        'Dosis programadas',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  const Divider(),
-                  const SizedBox(height: 8),
-                  if (_getEventsForDay(_selectedDay!).isEmpty)
-                    Center(
-                      child: Text(
-                        'No hay dosis programadas para este día',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    )
-                  else
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _getEventsForDay(_selectedDay!).length,
-                      itemBuilder: (context, index) {
-                        final event = _getEventsForDay(_selectedDay!)[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Row(
-                            children: [
-                              Icon(
-                                event['type'] == 'liquid'
-                                    ? Icons.medication_liquid
-                                    : Icons.medication,
-                                color: theme.colorScheme.primary,
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      event['medicineName'],
-                                      style: theme.textTheme.titleSmall,
-                                    ),
-                                    Text(
-                                      'Cantidad: ${event['doseQuantity']} - Cada ${event['frequency']} horas',
-                                      style: theme.textTheme.bodyMedium,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                ],
+            calendarStyle: CalendarStyle(
+              markersMaxCount: 1,
+              markerDecoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                shape: BoxShape.circle,
+              ),
+              todayTextStyle: TextStyle(color: theme.colorScheme.primary),
+              markerMargin: const EdgeInsets.only(top: 7),
+              todayDecoration: BoxDecoration(
+                border: Border.all(color: theme.colorScheme.primary, width: 2),
+                //color: theme.colorScheme.primary,
+                shape: BoxShape.circle,
+              ),
+              selectedTextStyle: TextStyle(color: theme.colorScheme.onPrimary),
+              selectedDecoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                shape: BoxShape.circle,
               ),
             ),
           ),
+          const SizedBox(height: 16),
+          if (_selectedDay != null) ...[
+            Card(
+              elevation: 4,
+              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.medication_outlined,
+                          size: 28,
+                          color: theme.colorScheme.primary,
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          'Dosis programadas',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Divider(),
+                    const SizedBox(height: 8),
+                    if (_getEventsForDay(_selectedDay!).isEmpty)
+                      Center(
+                        child: Text(
+                          'No hay dosis programadas para este día',
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      )
+                    else
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _getEventsForDay(_selectedDay!).length,
+                        itemBuilder: (context, index) {
+                          final event = _getEventsForDay(_selectedDay!)[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  event['type'] == 'liquid'
+                                      ? Icons.medication_liquid
+                                      : Icons.medication,
+                                  color: theme.colorScheme.primary,
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        event['medicineName'],
+                                        style: theme.textTheme.titleSmall,
+                                      ),
+                                      Text(
+                                        'Cantidad: ${event['doseQuantity']} - Cada ${event['frequency']} horas',
+                                        style: theme.textTheme.bodyMedium,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }

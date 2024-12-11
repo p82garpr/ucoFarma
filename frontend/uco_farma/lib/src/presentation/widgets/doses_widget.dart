@@ -119,7 +119,8 @@ class DosesWidget extends StatelessWidget {
                         final success = await doseProvider.takeDose(
                             authProvider.user?.id ?? '',
                             cn,
-                            (dose?.quantity ?? 0).toInt(),
+                            (dose?.quantity == 0 ? 1 : dose?.quantity ?? 1)
+                                .toInt(),
                             authProvider.token ?? '');
 
                         if (success) {

@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import '../models/medicine_model.dart';
 //import '../models/cima_medicine_model.dart';
 
-
 class MedicineService {
   final String _baseUrl = 'http://10.0.2.2:8000';
   final String _cimaApiUrl = 'https://cima.aemps.es/cima/rest';
@@ -19,8 +18,7 @@ class MedicineService {
       double doseQuantity,
       bool wished,
       String startDate,
-      String endDate
-      ) async {
+      String endDate) async {
     try {
       final cimaResponse =
           await http.get(Uri.parse('$_cimaApiUrl/medicamento?cn=$cn'));
@@ -33,7 +31,13 @@ class MedicineService {
           name: cimaData['nombre'] ?? '',
           quantity: quantity,
           type: type,
-          doses: [Dose(frequency: frequency, quantity: doseQuantity.toInt(), startDate: startDate, endDate: endDate)],
+          doses: [
+            Dose(
+                frequency: frequency,
+                quantity: doseQuantity.toInt(),
+                startDate: startDate,
+                endDate: endDate)
+          ],
           wished: false,
         );
 
@@ -107,7 +111,8 @@ class MedicineService {
       if (e.toString().contains('SocketException')) {
         return {
           'success': false,
-          'message': 'Error de conexión con CIMA. Compruebe su conexión a Internet.',
+          'message':
+              'Error de conexión con CIMA. Compruebe su conexión a Internet.',
         };
       }
       return {
@@ -117,7 +122,8 @@ class MedicineService {
     }
   }
 
-  Future<Map<String, dynamic>> deleteMedicine(String userId, String cn, String token) async {
+  Future<Map<String, dynamic>> deleteMedicine(
+      String userId, String cn, String token) async {
     try {
       final response = await http.delete(
         Uri.parse('$_baseUrl/medicines/$userId/delete-medicine/$cn'),
@@ -144,7 +150,4 @@ class MedicineService {
       };
     }
   }
-
 }
-
-

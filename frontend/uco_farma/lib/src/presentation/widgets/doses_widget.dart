@@ -204,7 +204,7 @@ class DosesWidget extends StatelessWidget {
                                       initialDate: dose?.startDate != null
                                           ? DateTime.parse(dose!.startDate)
                                           : DateTime.now(),
-                                      firstDate: DateTime.now(),
+                                      firstDate: DateTime(1970),
                                       lastDate: DateTime(2101),
                                     );
                                     if (picked != null) {

@@ -116,31 +116,59 @@ class DosesWidget extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () async {
-                        final success = await doseProvider.takeDose(
-                            authProvider.user?.id ?? '',
-                            cn,
-                            (dose?.quantity == 0 ? 1 : dose?.quantity ?? 1)
-                                .toInt(),
-                            authProvider.token ?? '');
+                        // Mostrar diálogo de confirmación
+                        final bool? confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Confirmar toma'),
+                              content: Text(
+                                  'Vas a tomar ${(dose?.quantity == 0 ? 1 : dose?.quantity ?? 1)} ${_getUnits(medicine.type)} de ${medicine.name}. ¿Estás seguro?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: const Text('Cancelar'),
+                                ),
+                                FilledButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(true),
+                                  child: const Text('Confirmar'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
 
-                        if (success) {
-                          authProvider.refreshUserData();
-                          if (!context.mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Dosis tomada correctamente'),
-                              backgroundColor: theme.colorScheme.secondary,
-                            ),
-                          );
-                        } else {
-                          if (!context.mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(doseProvider.error ??
-                                  'Error al tomar la dosis'),
-                              backgroundColor: theme.colorScheme.error,
-                            ),
-                          );
+                        // Si el usuario confirma, proceder con la toma
+                        if (confirm == true) {
+                          final success = await doseProvider.takeDose(
+                              authProvider.user?.id ?? '',
+                              cn,
+                              (dose?.quantity == 0 ? 1 : dose?.quantity ?? 1)
+                                  .toInt(),
+                              authProvider.token ?? '');
+
+                          if (success) {
+                            authProvider.refreshUserData();
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    const Text('Dosis tomada correctamente'),
+                                backgroundColor: theme.colorScheme.secondary,
+                              ),
+                            );
+                          } else {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(doseProvider.error ??
+                                    'Error al tomar la dosis'),
+                                backgroundColor: theme.colorScheme.error,
+                              ),
+                            );
+                          }
                         }
                       },
                       style: ElevatedButton.styleFrom(

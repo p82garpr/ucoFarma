@@ -196,7 +196,7 @@ class DosesWidget extends StatelessWidget {
                         context: context,
                         builder: (context) => AlertDialog(
                           title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               const Text('Editar dosis'),
                               IconButton(
@@ -218,8 +218,8 @@ class DosesWidget extends StatelessWidget {
                                     );
                                   },
                                 ),
-                                icon: Icon(Icons.warning_rounded,
-                                    color: theme.colorScheme.error),
+                                icon: const Icon(Icons.warning_rounded,
+                                    color: Color.fromARGB(255, 197, 151, 14)),
                               ),
                             ],
                           ),

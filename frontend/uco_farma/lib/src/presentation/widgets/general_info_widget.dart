@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uco_farma/src/presentation/widgets/schedule_notification_dialog.dart';
 import '../providers/medicine_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/shoplist_provider.dart';

@@ -91,6 +91,15 @@ class _EditDoseDialogState extends State<EditDoseDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
+              onFieldSubmitted: (value) {
+                if (value.isEmpty) {
+                  quantityController.text = '0';
+                } else {
+                  setState(() {
+                    quantityController.text = value;
+                  });
+                }
+              },
               controller: quantityController,
               decoration: InputDecoration(
                 labelText: 'Cantidad por toma',
@@ -101,6 +110,15 @@ class _EditDoseDialogState extends State<EditDoseDialog> {
             ),
             const SizedBox(height: 16),
             TextFormField(
+              onFieldSubmitted: (value) {
+                if (value.isEmpty) {
+                  frequencyController.text = '0';
+                } else {
+                  setState(() {
+                    frequencyController.text = value;
+                  });
+                }
+              },
               controller: frequencyController,
               decoration: const InputDecoration(
                 labelText: 'Frecuencia',
@@ -112,6 +130,16 @@ class _EditDoseDialogState extends State<EditDoseDialog> {
             const SizedBox(height: 24),
             InkWell(
               onTap: () async {
+                if (int.parse(quantityController.text) == 0 &&
+                    int.parse(frequencyController.text) == 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'Primero debes introducir una cantidad y una frecuencia'),
+                    ),
+                  );
+                  return;
+                }
                 final DateTime? picked = await showDatePicker(
                   context: context,
                   initialDate: startDateController.text.isNotEmpty
@@ -155,6 +183,16 @@ class _EditDoseDialogState extends State<EditDoseDialog> {
             const SizedBox(height: 16),
             InkWell(
               onTap: () async {
+                if (int.parse(quantityController.text) == 0 &&
+                    int.parse(frequencyController.text) == 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'Primero debes introducir una cantidad y una frecuencia'),
+                    ),
+                  );
+                  return;
+                }
                 if (startDateController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

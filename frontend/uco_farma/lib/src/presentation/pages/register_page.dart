@@ -17,6 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   DateTime? _selectedDate;
 
+
   Future<void> _selectDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -86,6 +87,10 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
         backgroundColor: theme.colorScheme.primary,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary),
+        )
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -212,7 +217,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const SizedBox(height: 16),
                 TextButton(
-                  onPressed: _navigateToLogin,
+                  onPressed: Provider.of<AuthProvider>(context).isLoading ? null : _navigateToLogin,
                   child: Text(
                     '¿Ya tienes una cuenta? Inicia sesión',
                     style: theme.textTheme.bodyMedium?.copyWith(

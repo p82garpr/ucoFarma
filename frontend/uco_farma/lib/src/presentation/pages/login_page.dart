@@ -15,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+ 
 
   void _navigateToHome() {
     if (mounted) {
@@ -118,12 +119,16 @@ class _LoginPageState extends State<LoginPage> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   FocusScope.of(context).unfocus();
-                                  
+
+
                                   if (_formKey.currentState!.validate()) {
+                                    
                                     final success = await authProvider.login(
                                       _emailController.text.trim(),
                                       _passwordController.text,
                                     );
+                                    
+                                    
                                     
                                     if (success) {
                                       _navigateToHome();
@@ -144,7 +149,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 16),
                     TextButton(
-                      onPressed: () {
+                      onPressed: Provider.of<AuthProvider>(context).isLoading ? null : () {
+
                         if (mounted) {
                           Navigator.push(
                             context,

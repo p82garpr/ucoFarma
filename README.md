@@ -1,6 +1,6 @@
 # UCO Farma
 
-<p align="center"><img src="frontend/uco_farma/assets/images/logo-removebg.png" alt="Logo de UCO Farma" width="250"/></p>
+<p align="center"><img src="frontend/uco_farma/assets/images/logo-removebg.png" alt="Logo de UCO Farma" width="250"/><img src="frontend/uco_farma/assets/images/Logo_UCO.png" alt="Logo de UCO" width="250"/></p>
 
 ## Descripción
 **UCO Farma** es un proyecto universitario desarrollado para la asignatura de **Ingeniería de Sistemas Móviles** de la **Universidad de Córdoba**. Este proyecto consiste en una aplicación móvil diseñada para el **inventariado**, **gestión de medicamentos** y **programación de dosis**.

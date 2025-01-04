@@ -1,6 +1,6 @@
 import requests
 
-ENDPOINT = 'https://ucofarma.onrender.com'
+ENDPOINT = 'http://127.0.0.1:8000'
 
 
 
@@ -36,7 +36,9 @@ def test_add_medicine():
             "doses": [
             {
                 "frequency": 0,
-                "quantity": 10
+                "quantity": 10,
+                "startDate":"2025-01-04T00:00:00.000",
+                "endDate":"2025-01-18T00:00:00.000"
             }
         ],
         "wished": False
@@ -84,7 +86,7 @@ def test_take_medicine():
     # Paso 3: Consumir una cantidad del medicamento
     take_medicine_data = {
         "user_id": user_id,
-        "cn": "test-cn",
+        "cn": "string",
         "quantity": 3
     }
     take_medicine_response = requests.put(

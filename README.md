@@ -1,5 +1,15 @@
 # UCO Farma
 
+## Índice
+- [Descripción](#descripción)
+- [Tecnologías utilizadas](#tecnologías-utilizadas)
+- [Características principales](#características-principales)
+- [Instalación y uso](#instalación-y-uso)
+  - [Backend](#backend)
+  - [Frontend](#frontend)
+- [Autores](#autores)
+
+---
 
 
 ## Descripción

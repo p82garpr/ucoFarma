@@ -10,10 +10,12 @@ class ScheduleNotificationDialog extends StatefulWidget {
   });
 
   @override
-  State<ScheduleNotificationDialog> createState() => _ScheduleNotificationDialogState();
+  State<ScheduleNotificationDialog> createState() =>
+      _ScheduleNotificationDialogState();
 }
 
-class _ScheduleNotificationDialogState extends State<ScheduleNotificationDialog> {
+class _ScheduleNotificationDialogState
+    extends State<ScheduleNotificationDialog> {
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   final _notificationService = NotificationService();
@@ -57,7 +59,7 @@ class _ScheduleNotificationDialogState extends State<ScheduleNotificationDialog>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return AlertDialog(
       title: const Text('Programar recordatorio'),
       content: Column(
@@ -65,16 +67,16 @@ class _ScheduleNotificationDialogState extends State<ScheduleNotificationDialog>
         children: [
           ListTile(
             leading: const Icon(Icons.calendar_today),
-            title: Text(_selectedDate == null 
-              ? 'Seleccionar fecha'
-              : 'Fecha: ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'),
+            title: Text(_selectedDate == null
+                ? 'Seleccionar fecha'
+                : 'Fecha: ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'),
             onTap: () => _selectDate(context),
           ),
           ListTile(
             leading: const Icon(Icons.access_time),
-            title: Text(_selectedTime == null 
-              ? 'Seleccionar hora'
-              : 'Hora: ${_selectedTime!.format(context)}'),
+            title: Text(_selectedTime == null
+                ? 'Seleccionar hora'
+                : 'Hora: ${_selectedTime!.format(context)}'),
             onTap: () => _selectTime(context),
           ),
         ],
@@ -84,78 +86,55 @@ class _ScheduleNotificationDialogState extends State<ScheduleNotificationDialog>
           onPressed: () => Navigator.pop(context),
           child: const Text('Cancelar'),
         ),
-        TextButton(
-          onPressed: () async {
-            try {
-              await _notificationService.showNotification(
-                title: 'Prueba de notificación',
-                body: 'Esta es una notificación de prueba para ${widget.medicineName}',
-              );
-              if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Notificación de prueba enviada'),
-                ),
-              );
-            } catch (e) {
-              if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Error al enviar notificación: ${e.toString()}'),
-                  backgroundColor: theme.colorScheme.error,
-                ),
-              );
-            }
-          },
-          child: const Text('Probar Notificación'),
-        ),
         FilledButton(
-          onPressed: (_selectedDate == null || _selectedTime == null) 
-            ? null 
-            : () async {
-                try {
-                  final now = DateTime.now();
-                  final scheduledDate = DateTime(
-                    _selectedDate!.year,
-                    _selectedDate!.month,
-                    _selectedDate!.day,
-                    _selectedTime!.hour,
-                    _selectedTime!.minute,
-                  );
+          onPressed: (_selectedDate == null || _selectedTime == null)
+              ? null
+              : () async {
+                  try {
+                    final now = DateTime.now();
+                    final scheduledDate = DateTime(
+                      _selectedDate!.year,
+                      _selectedDate!.month,
+                      _selectedDate!.day,
+                      _selectedTime!.hour,
+                      _selectedTime!.minute,
+                    );
 
-                  if (scheduledDate.isBefore(now)) {
+                    if (scheduledDate.isBefore(now)) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content:
+                              Text('La fecha seleccionada debe ser futura'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    await _notificationService.scheduleNotification(
+                      title: 'Recordatorio de medicamento',
+                      body: 'Es hora de tomar ${widget.medicineName}',
+                      scheduledDate: scheduledDate,
+                    );
+
                     if (!context.mounted) return;
+                    Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('La fecha seleccionada debe ser futura'),
+                        content: Text('Recordatorio programado con éxito'),
                       ),
                     );
-                    return;
+                  } catch (e) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            'Error al programar el recordatorio: ${e.toString()}'),
+                        backgroundColor: theme.colorScheme.error,
+                      ),
+                    );
                   }
-
-                  await _notificationService.scheduleNotification(
-                    title: 'Recordatorio de medicamento',
-                    body: 'Es hora de tomar ${widget.medicineName}',
-                    scheduledDate: scheduledDate,
-                  );
-
-                  if (!context.mounted) return;
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Recordatorio programado con éxito'),
-                    ),
-                  );
-                } catch (e) {
-                  if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Error al programar el recordatorio: ${e.toString()}'),
-                      backgroundColor: theme.colorScheme.error,
-                    ),
-                  );
-                }
-              },
+                },
           child: const Text('Programar'),
         ),
       ],

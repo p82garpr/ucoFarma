@@ -17,6 +17,8 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
   final _quantityController = TextEditingController();
   final _frequencyController = TextEditingController(text: '0');
   final _doseQuantityController = TextEditingController(text: '0');
+  final _doseStartDateTimeController = TextEditingController();
+  final _doseEndDateTimeController = TextEditingController();
   String? _medicineName;
   
   bool _isLoading = false;
@@ -83,6 +85,8 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
                 medicineName: _medicineName,
                 onAddMedicine: _addMedicine,
                 onTypeChanged: (value) => setState(() => _selectedType = value),
+                startDateController: _doseStartDateTimeController,
+                endDateController: _doseEndDateTimeController,
               ),
             )
           : _buildQRScanner(theme),
@@ -128,6 +132,8 @@ class _AddMedicineQRPageState extends State<AddMedicineQRPage> {
         int.parse(_frequencyController.text),
         double.parse(_doseQuantityController.text),
         false,
+        _doseStartDateTimeController.text.trim(),
+        _doseEndDateTimeController.text.trim()
       );
 
       if (!mounted) return;

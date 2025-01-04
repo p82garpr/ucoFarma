@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uco_farma/src/presentation/widgets/schedule_notification_dialog.dart';
 import '../providers/medicine_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/shoplist_provider.dart';
 
 class GeneralInfoWidget extends StatefulWidget {
   final String cn;
-  
+
   const GeneralInfoWidget({super.key, required this.cn});
 
   @override
@@ -44,7 +43,7 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
     return Builder(
       builder: (context) {
         final theme = Theme.of(context);
-        
+
         Color iconColor;
         if (reverseColors) {
           iconColor = isActive ? Colors.red : Colors.green;
@@ -75,7 +74,8 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
                       top: 0,
                       right: 0,
                       child: InkWell(
-                        onTap: () => _showInfoDialog(context, title, description),
+                        onTap: () =>
+                            _showInfoDialog(context, title, description),
                         child: Icon(
                           Icons.info_outline,
                           size: 14,
@@ -130,9 +130,13 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
     }
 
     IconData getMedicineIcon() {
-      return medicine.formaFarmaceutica.nombre.toLowerCase().contains('líquido') ||
-             medicine.formaFarmaceutica.nombre.toLowerCase().contains('solución') ||
-             medicine.formaFarmaceutica.nombre.toLowerCase().contains('jarabe')
+      return medicine.formaFarmaceutica.nombre
+                  .toLowerCase()
+                  .contains('líquido') ||
+              medicine.formaFarmaceutica.nombre
+                  .toLowerCase()
+                  .contains('solución') ||
+              medicine.formaFarmaceutica.nombre.toLowerCase().contains('jarabe')
           ? Icons.medication_liquid
           : Icons.medication;
     }
@@ -231,12 +235,11 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
                       child: Image.network(
                         medicine.fotos.first.url,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            Icon(
-                              getMedicineIcon(),
-                              size: 100,
-                              color: theme.colorScheme.primary,
-                            ),
+                        errorBuilder: (context, error, stackTrace) => Icon(
+                          getMedicineIcon(),
+                          size: 100,
+                          color: theme.colorScheme.primary,
+                        ),
                       ),
                     )
                   : Icon(
@@ -261,7 +264,8 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
                   isActive: medicine.conduc,
                   label: 'Conducción',
                   title: 'Conducción',
-                  description: 'Este icono indica si el medicamento puede afectar a la capacidad de conducir. Si está en verde, significa que es seguro conducir mientras se toma este medicamento. Si está en rojo, se recomienda no conducir.',
+                  description:
+                      'Este icono indica si el medicamento puede afectar a la capacidad de conducir. Si está en verde, significa que es seguro conducir mientras se toma este medicamento. Si está en rojo, se recomienda no conducir.',
                   reverseColors: true,
                 ),
                 _buildInfoIcon(
@@ -269,7 +273,8 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
                   isActive: medicine.triangulo,
                   label: 'Sensible',
                   title: 'Medicamento de Especial Control',
-                  description: 'Este icono indica si el medicamento requiere un seguimiento adicional. Si está en rojo, el medicamento está sujeto a un monitoreo especial por parte de las autoridades sanitarias.',
+                  description:
+                      'Este icono indica si el medicamento requiere un seguimiento adicional. Si está en rojo, el medicamento está sujeto a un monitoreo especial por parte de las autoridades sanitarias.',
                   reverseColors: true,
                 ),
                 _buildInfoIcon(
@@ -277,14 +282,16 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
                   isActive: medicine.huerfano,
                   label: 'Huérfano',
                   title: 'Medicamento Huérfano',
-                  description: 'Este icono indica si el medicamento está designado como huérfano. Los medicamentos huérfanos son aquellos destinados al diagnóstico, prevención o tratamiento de enfermedades raras.',
+                  description:
+                      'Este icono indica si el medicamento está designado como huérfano. Los medicamentos huérfanos son aquellos destinados al diagnóstico, prevención o tratamiento de enfermedades raras.',
                 ),
                 _buildInfoIcon(
                   icon: Icons.receipt_long,
                   isActive: medicine.receta,
                   label: 'Receta',
                   title: 'Receta Médica',
-                  description: 'Este icono indica si el medicamento requiere receta médica para su dispensación. Si está en verde, necesitarás una receta médica para obtener este medicamento.',
+                  description:
+                      'Este icono indica si el medicamento requiere receta médica para su dispensación. Si está en verde, necesitarás una receta médica para obtener este medicamento.',
                 ),
               ],
             ),
@@ -293,37 +300,19 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => ScheduleNotificationDialog(
-                    medicineName: medicine.nombre,
-                  ),
-                );
-              },
-              icon: const Icon(Icons.notification_add),
-              label: const Text('Programar recordatorio'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.secondaryContainer,
-                foregroundColor: theme.colorScheme.onSecondaryContainer,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
               onPressed: () async {
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                final medicineProvider = Provider.of<MedicineProvider>(context, listen: false);
-                
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
+                final medicineProvider =
+                    Provider.of<MedicineProvider>(context, listen: false);
+
                 final userId = authProvider.user?.id;
                 final token = authProvider.token;
 
                 if (userId == null || token == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Error: Usuario no autenticado')),
+                    const SnackBar(
+                        content: Text('Error: Usuario no autenticado')),
                   );
                   return;
                 }
@@ -333,7 +322,8 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text('Confirmar eliminación'),
-                    content: const Text('¿Estás seguro de que deseas eliminar este medicamento?'),
+                    content: const Text(
+                        '¿Estás seguro de que deseas eliminar este medicamento?'),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context, false),
@@ -352,21 +342,25 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
 
                 if (confirm != true || !context.mounted) return;
 
-                final success = await medicineProvider.deleteMedicine(userId, widget.cn, token);
+                final success = await medicineProvider.deleteMedicine(
+                    userId, widget.cn, token);
 
                 if (!context.mounted) return;
 
                 if (success) {
                   await authProvider.refreshUserData();
                   if (!context.mounted) return;
-                  
+
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Medicamento eliminado con éxito')),
+                    const SnackBar(
+                        content: Text('Medicamento eliminado con éxito')),
                   );
                   Navigator.pop(context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(medicineProvider.error ?? 'Error al eliminar el medicamento')),
+                    SnackBar(
+                        content: Text(medicineProvider.error ??
+                            'Error al eliminar el medicamento')),
                   );
                 }
               },
@@ -385,31 +379,36 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
             child: Consumer<AuthProvider>(
               builder: (context, authProvider, _) {
                 final isInShoplist = authProvider.user?.medicines
-                    ?.any((med) => med.cn == widget.cn && med.wished) ?? false;
+                        ?.any((med) => med.cn == widget.cn && med.wished) ??
+                    false;
 
                 return ElevatedButton.icon(
                   onPressed: () async {
-                    final shoplistProvider = Provider.of<ShoplistProvider>(context, listen: false);
+                    final shoplistProvider =
+                        Provider.of<ShoplistProvider>(context, listen: false);
                     final userId = authProvider.user?.id;
                     final token = authProvider.token;
 
                     if (userId == null || token == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Error: Usuario no autenticado')),
+                        const SnackBar(
+                            content: Text('Error: Usuario no autenticado')),
                       );
                       return;
                     }
 
                     final success = isInShoplist
-                        ? await shoplistProvider.deleteFromShoplist(userId, widget.cn, token)
-                        : await shoplistProvider.addToShoplist(userId, widget.cn, token);
+                        ? await shoplistProvider.deleteFromShoplist(
+                            userId, widget.cn, token)
+                        : await shoplistProvider.addToShoplist(
+                            userId, widget.cn, token);
 
                     if (!context.mounted) return;
 
                     if (success) {
                       await authProvider.refreshUserData();
                       if (!context.mounted) return;
-                      
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
@@ -421,19 +420,25 @@ class _GeneralInfoWidgetState extends State<GeneralInfoWidget> {
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(shoplistProvider.error ?? 'Error en la operación')),
+                        SnackBar(
+                            content: Text(shoplistProvider.error ??
+                                'Error en la operación')),
                       );
                     }
                   },
                   icon: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
                     child: Icon(
-                      isInShoplist ? Icons.remove_shopping_cart : Icons.add_shopping_cart,
+                      isInShoplist
+                          ? Icons.remove_shopping_cart
+                          : Icons.add_shopping_cart,
                       key: ValueKey<bool>(isInShoplist),
                     ),
                   ),
                   label: Text(
-                    isInShoplist ? 'Quitar de la lista de compras' : 'Añadir a la lista de compras',
+                    isInShoplist
+                        ? 'Quitar de la lista de compras'
+                        : 'Añadir a la lista de compras',
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isInShoplist

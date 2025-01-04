@@ -1,16 +1,26 @@
 # UCO Farma
 
+![Logo de UCO Farma](frontend/uco_farma/assets/images/logo_removebg.png)
+
 ## Descripción
 **UCO Farma** es un proyecto universitario desarrollado para la asignatura de **Ingeniería de Sistemas Móviles** de la **Universidad de Córdoba**. Este proyecto consiste en una aplicación móvil diseñada para el **inventariado**, **gestión de medicamentos** y **programación de dosis**.
 
+---
+
 ## Tecnologías utilizadas
+### 🛠️ Tecnologías
 - **Flutter**: Framework para el desarrollo de la interfaz móvil.
 - **FastAPI**: Framework para el backend y la gestión de la API.
 
+---
+
 ## Características principales
+### 🌟 Características
 - 📦 **Inventariado de medicamentos.**
 - 📋 **Gestión de información relacionada con los medicamentos.**
 - ⏰ **Programación y notificaciones para la toma de dosis.**
+
+---
 
 ## Instalación y uso
 
@@ -55,6 +65,8 @@ Para poner en funcionamiento el backend, sigue estos pasos:
    ```bash
    uvicorn main:app
    ```
+
+---
 
 ### Frontend
 Para ejecutar el frontend, sigue estos pasos:
@@ -105,9 +117,13 @@ Durante el desarrollo, puedes utilizar:
 - 🔄 **Hot reload**: Presiona `r` en la consola.
 - 🔁 **Hot restart**: Presiona `R` para reiniciar.
 
+---
+
 ## Autores
+### ✍️ Autores
 - **Rafael García Pérez**
 - **Manuel Cabrera Crespo**
 - **Francisco Javier Fernández Pastor**
 - **Gabriel Ionuț Roncea**
 - **José Manuel García del Prado Valenzuela**
+

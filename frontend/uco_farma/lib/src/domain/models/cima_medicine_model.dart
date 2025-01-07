@@ -181,14 +181,14 @@ class Atc {
 class Doc {
     int tipo;
     String url;
-    String urlHtml;
+    String? urlHtml;
     bool secc;
     int fecha;
 
     Doc({
         required this.tipo,
         required this.url,
-        required this.urlHtml,
+        this.urlHtml,
         required this.secc,
         required this.fecha,
     });

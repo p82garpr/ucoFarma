@@ -128,6 +128,16 @@ Durante el desarrollo, puedes utilizar:
 - 🔄 **Hot reload**: Presiona `r` en la consola.
 - 🔁 **Hot restart**: Presiona `R` para reiniciar.
 
+### Documentación API
+Para ver la documentación de la API, simplemente entraremos a la siguiente URL:
+```bash
+http://localhost:8000/docs
+```
+O bien, a la que ya tenemos en despliegue ligada al backend de la rama main:
+```bash
+https://ucofarma.onrender.com/docs
+```
+
 ---
 
 ## Autores

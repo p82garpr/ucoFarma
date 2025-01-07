@@ -7,6 +7,7 @@
 - [Instalación y uso](#instalación-y-uso)
   - [Backend](#backend)
   - [Frontend](#frontend)
+  - [Documentación API](#documentación-api)
 - [Autores](#autores)
 
 ---
@@ -128,7 +129,7 @@ Durante el desarrollo, puedes utilizar:
 - 🔄 **Hot reload**: Presiona `r` en la consola.
 - 🔁 **Hot restart**: Presiona `R` para reiniciar.
 
-### Documentación API
+#### Documentación API
 Para ver la documentación de la API, simplemente entraremos a la siguiente URL:
 ```bash
 http://localhost:8000/docs
